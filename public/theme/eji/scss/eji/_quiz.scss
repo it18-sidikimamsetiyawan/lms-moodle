@@ -1,0 +1,386 @@
+// =====================================================================
+// EJI ONE - Quiz
+//
+// Quiz attempts are drawn by mod_quiz's renderer together with the question
+// engine (question/engine). Neither is template-based for the learner-facing
+// screens, so - exactly as with Lesson - this file is CSS-only.
+//
+// That is the strongest guarantee available that the brief's constraint is
+// met: scoring, the question engine, attempt logic, grading, randomisation and
+// the question bank are not merely "left alone by convention", they are never
+// reached by anything in this theme.
+//
+// The markup targeted below is the question engine's stable output:
+//
+//   .que.<qtype>
+//     .info          number, state, mark
+//     .content
+//       .formulation question text and answer options
+//       .outcome     feedback
+//   #responseform    the answer form
+//   .submitbtns      Previous / Next
+//   #mod_quiz_navblock  the question navigation panel
+// =====================================================================
+
+.path-mod-quiz {
+
+    // -----------------------------------------------------------------
+    // One question = one EJI card
+    //
+    // Inside a course the content column can be squeezed by up to three open
+    // drawers (EJI sidebar, course index, blocks), so the info rail is sized
+    // to shrink rather than to a fixed width: `flex: 0 1 7.5rem` with a floor
+    // of 5rem. Paired with `min-width: 0` on the content side, the question
+    // text keeps a usable measure however narrow the column gets, and no
+    // layout rule has to guess at the window width.
+    // -----------------------------------------------------------------
+    .que {
+        display: flex;
+        gap: var(--eji-sp-5);
+        margin-bottom: var(--eji-sp-5);
+        padding: var(--eji-sp-5) var(--eji-sp-6);
+        background: var(--eji-surface);
+        border: 1px solid var(--eji-line);
+        border-radius: var(--eji-r-lg);
+        box-shadow: var(--eji-sh-sm);
+
+        // -------------------------------------------------------------
+        // The info rail: question number, state, mark
+        // -------------------------------------------------------------
+        .info {
+            flex: 0 1 7.5rem;
+            min-width: 5rem;
+            width: auto;
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border: 0;
+
+            .no {
+                font-size: var(--eji-fs-xs);
+                font-weight: var(--eji-fw-semibold);
+                letter-spacing: .06em;
+                text-transform: uppercase;
+                color: var(--eji-ink-500);
+
+                .qno {
+                    display: block;
+                    font-size: var(--eji-fs-lg);
+                    font-weight: var(--eji-fw-bold);
+                    letter-spacing: 0;
+                    color: var(--eji-ink-900);
+                    font-variant-numeric: tabular-nums;
+                }
+            }
+
+            .state,
+            .grade {
+                display: block;
+                margin-top: var(--eji-sp-2);
+                font-size: var(--eji-fs-xs);
+                color: var(--eji-ink-500);
+            }
+
+            .questionflag {
+                margin-top: var(--eji-sp-2);
+            }
+        }
+
+        .content {
+            flex: 1 1 auto;
+            min-width: 0;
+            margin: 0;
+        }
+
+        // -------------------------------------------------------------
+        // Question text
+        // -------------------------------------------------------------
+        .formulation {
+            background: transparent;
+            border: 0;
+            padding: 0;
+            font-size: var(--eji-fs-reading);
+            line-height: 1.7;
+            color: var(--eji-ink-800);
+
+            .qtext {
+                margin-bottom: var(--eji-sp-5);
+                color: var(--eji-ink-900);
+            }
+
+            img {
+                max-width: 100%;
+                height: auto;
+                border-radius: var(--eji-r-md);
+            }
+        }
+
+        // -------------------------------------------------------------
+        // Answer options
+        //
+        // The question engine renders each option as
+        //     .answer > div.rN > input + div.d-flex[data-region=answer-label]
+        //                                  > span.answernumber + div.flex-fill
+        // and the same shape is used by multichoice, truefalse and several
+        // other qtypes, so styling it here covers all of them.
+        //
+        // min-width: 0 on the label wrapper is the load-bearing line: without
+        // it the nested flex box refuses to shrink below its longest word and
+        // the option text breaks one word per line as soon as the column is
+        // narrow.
+        // -------------------------------------------------------------
+        .answer {
+            display: flex;
+            flex-direction: column;
+            gap: var(--eji-sp-2);
+
+            > div {
+                display: flex;
+                align-items: flex-start;
+                gap: var(--eji-sp-3);
+                padding: var(--eji-sp-3) var(--eji-sp-4);
+                margin: 0;
+                min-width: 0;
+                border: 1px solid var(--eji-line);
+                border-radius: var(--eji-r-md);
+                background: var(--eji-surface);
+                transition: border-color var(--eji-transition), background var(--eji-transition);
+
+                &:hover {
+                    border-color: var(--eji-accent-600);
+                    background: var(--eji-accent-50);
+                }
+
+                // The option the learner has picked.
+                &:has(input:checked) {
+                    border-color: var(--eji-accent-600);
+                    background: var(--eji-accent-50);
+                }
+
+                // The label wrapper and its text column.
+                [data-region="answer-label"] {
+                    flex: 1 1 auto;
+                    min-width: 0;
+                    cursor: pointer;
+                }
+
+                .flex-fill {
+                    min-width: 0;
+                    overflow-wrap: break-word;
+                }
+
+                .answernumber {
+                    flex: none;
+                    font-weight: var(--eji-fw-semibold);
+                    color: var(--eji-ink-500);
+                }
+
+                label {
+                    margin: 0;
+                    font-weight: var(--eji-fw-regular);
+                    color: var(--eji-ink-800);
+                    cursor: pointer;
+                }
+
+                input[type="radio"],
+                input[type="checkbox"] {
+                    flex: none;
+                    margin-top: .2rem;
+                }
+            }
+
+            // Correctness classes come from the question engine after grading.
+            // They carry meaning, so they are recoloured rather than removed.
+            .correct {
+                border-color: var(--eji-success-600);
+                background: var(--eji-success-50);
+            }
+
+            .incorrect {
+                border-color: var(--eji-danger-600);
+                background: var(--eji-danger-50);
+            }
+        }
+
+        // Short answer / numerical inputs.
+        input[type="text"],
+        input.form-control {
+            max-width: 24rem;
+        }
+
+        // -------------------------------------------------------------
+        // Feedback after grading
+        // -------------------------------------------------------------
+        .outcome,
+        .comment {
+            margin-top: var(--eji-sp-4);
+            padding: var(--eji-sp-3) var(--eji-sp-4);
+            border: 1px solid var(--eji-line);
+            border-radius: var(--eji-r-md);
+            background: var(--eji-bg-alt);
+            font-size: var(--eji-fs-sm);
+        }
+
+        .feedback {
+            background: transparent;
+            border: 0;
+            padding: 0;
+        }
+    }
+
+    // Correct / partially correct / incorrect banding on the whole question.
+    .que.correct > .info {
+        border-left: 3px solid var(--eji-success-600);
+        padding-left: var(--eji-sp-3);
+    }
+
+    .que.partiallycorrect > .info {
+        border-left: 3px solid var(--eji-warning-600);
+        padding-left: var(--eji-sp-3);
+    }
+
+    .que.incorrect > .info {
+        border-left: 3px solid var(--eji-danger-600);
+        padding-left: var(--eji-sp-3);
+    }
+
+    // -----------------------------------------------------------------
+    // Previous / Next
+    // -----------------------------------------------------------------
+    .submitbtns,
+    #responseform .submitbtns {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--eji-sp-3);
+        margin-top: var(--eji-sp-5);
+        padding-top: var(--eji-sp-4);
+        border-top: 1px solid var(--eji-line);
+
+        .btn,
+        input[type="submit"] {
+            min-height: 40px;
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Question navigation panel
+    // -----------------------------------------------------------------
+    #mod_quiz_navblock {
+        .qnbutton {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--eji-r-md);
+            border: 1px solid var(--eji-line-2);
+            background: var(--eji-surface);
+            color: var(--eji-ink-700);
+            font-size: var(--eji-fs-sm);
+            font-weight: var(--eji-fw-semibold);
+            font-variant-numeric: tabular-nums;
+
+            &:hover {
+                border-color: var(--eji-accent-600);
+            }
+
+            // State classes are produced by the question engine.
+            &.answersaved,
+            &.complete {
+                background: var(--eji-st-approved-bg);
+                border-color: var(--eji-st-approved);
+                color: var(--eji-st-approved-ink);
+            }
+
+            &.notyetanswered,
+            &.todo {
+                background: var(--eji-st-draft-bg);
+                border-color: var(--eji-line-2);
+                color: var(--eji-st-draft-ink);
+            }
+
+            &.invalidanswer,
+            &.incorrect {
+                background: var(--eji-st-rejected-bg);
+                border-color: var(--eji-st-rejected);
+                color: var(--eji-st-rejected-ink);
+            }
+
+            &.thispage {
+                outline: 2px solid var(--eji-accent-600);
+                outline-offset: 1px;
+            }
+
+            &.flagged {
+                box-shadow: inset 0 0 0 2px var(--eji-warning-600);
+            }
+        }
+
+        .qn_buttons {
+            gap: var(--eji-sp-2);
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Timer
+    // -----------------------------------------------------------------
+    #quiz-timer-wrapper,
+    .quiz-timer {
+        border: 1px solid var(--eji-line);
+        border-radius: var(--eji-r-md);
+        background: var(--eji-surface);
+        padding: var(--eji-sp-2) var(--eji-sp-3);
+        font-variant-numeric: tabular-nums;
+        font-weight: var(--eji-fw-semibold);
+    }
+
+    #quiz-timer.timeleft-warning,
+    .quiz-timer.timeleft-warning {
+        background: var(--eji-danger-50);
+        border-color: var(--eji-danger-600);
+        color: var(--eji-danger-700);
+    }
+
+    // -----------------------------------------------------------------
+    // Attempt summary and review tables
+    // -----------------------------------------------------------------
+    .quizattemptsummary,
+    .quizreviewsummary {
+        font-size: var(--eji-fs-sm);
+    }
+
+    .quizstartbuttondiv .btn {
+        min-height: 44px;
+        font-size: var(--eji-fs-md);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Narrow screens: the info rail goes above the question rather than beside it
+// ---------------------------------------------------------------------
+@include media-breakpoint-down(md) {
+    .path-mod-quiz .que {
+        flex-direction: column;
+        gap: var(--eji-sp-3);
+        padding: var(--eji-sp-4);
+
+        .info {
+            flex: 0 0 auto;
+            width: 100%;
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: var(--eji-sp-1) var(--eji-sp-3);
+            padding-bottom: var(--eji-sp-2);
+            border-bottom: 1px solid var(--eji-line);
+
+            .no .qno {
+                display: inline;
+                font-size: var(--eji-fs-md);
+            }
+
+            .state,
+            .grade,
+            .questionflag {
+                margin-top: 0;
+            }
+        }
+    }
+}

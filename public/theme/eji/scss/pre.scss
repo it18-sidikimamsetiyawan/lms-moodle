@@ -1,0 +1,14 @@
+// EJI ONE - SCSS injected before Boost's preset.
+//
+// Moodle calls theme_eji_get_pre_scss() (see lib.php), which reads this file
+// and hands it to the compiler ahead of everything else. That ordering is the
+// whole trick: the Moodle Design System tokens and every Bootstrap variable
+// are declared with !default, so whatever is assigned here wins for the entire
+// stylesheet - the colours, type and spacing of every Bootstrap and Moodle
+// component are recoloured without a single !important and without touching
+// core. (post.scss carries seven, all of them beating a Bootstrap utility that
+// is itself !important, or hiding chrome when printing.)
+//
+// Keep this file to imports only. Values belong in eji/_tokens.scss.
+
+@import "eji/tokens";

@@ -1,0 +1,379 @@
+// =====================================================================
+// EJI ONE - navigation sidebar
+//
+// The sidebar IS a Boost drawer. That is deliberate: it inherits the open and
+// close JavaScript, the backdrop on small screens, aria-hidden management and
+// the stored user preference, none of which had to be rewritten. (Escape-to-
+// close is not something Boost's drawer does; the theme adds it in
+// javascript/eji-navigation.js.)
+//
+// What changes here is only appearance and, above 992px, position: instead of
+// sliding over the page it sits beside it as a permanent column. Boost's own
+// JS already treats >= 991px as "not small" (core/pagehelpers isSmall), so no
+// JavaScript had to be patched to make that work.
+// =====================================================================
+
+// Boost sizes its left drawer with `.drawer.drawer-left`, so the EJI width has
+// to be stated at the same specificity or it loses. Everything else below is
+// plain .eji-sidebar.
+.drawer.drawer-left.eji-sidebar {
+    width: var(--eji-side-width);
+    max-width: var(--eji-side-width);
+}
+
+.eji-sidebar {
+    background: var(--eji-side-bg);
+    color: var(--eji-side-text);
+    box-shadow: none;
+    border-right: 1px solid var(--eji-primary-800);
+
+    // Boost parks a closed left drawer at -(width + 10px). Keep that behaviour
+    // but use the EJI width so the slide distance is exact.
+    &.drawer-left {
+        left: calc(-1 * var(--eji-side-width) - 10px);
+
+        &.show {
+            left: 0;
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Header
+    // -----------------------------------------------------------------
+    .drawerheader {
+        height: var(--eji-topbar-h);
+        padding: 0 var(--eji-sp-3) 0 var(--eji-sp-4);
+        border-bottom: 1px solid var(--eji-side-active);
+    }
+
+    .draweractions .btn {
+        --#{$prefix}btn-color: var(--eji-side-text);
+
+        &:hover {
+            background: var(--eji-side-active);
+            color: var(--eji-on-dark);
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Content
+    // -----------------------------------------------------------------
+    .drawercontent {
+        height: calc(100% - var(--eji-topbar-h));
+        padding: 0 var(--eji-sp-3) var(--eji-sp-4);
+
+        // Boost's thin-scrolls mixin assumes a light track; restate for navy.
+        scrollbar-color: var(--eji-side-active) transparent;
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: var(--eji-side-active);
+            border-radius: var(--eji-r-full);
+        }
+    }
+}
+
+// ---------------------------------------------------------------------
+// Brand
+// ---------------------------------------------------------------------
+.eji-sidebar__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--eji-sp-2);
+    min-width: 0;
+    color: var(--eji-on-dark);
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: var(--eji-on-dark);
+        text-decoration: none;
+    }
+}
+
+.eji-sidebar__logo,
+.eji-sidebar__mark {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--eji-r-md);
+    background: var(--eji-surface);
+}
+
+// Text fallback used when no compact logo is configured: the first characters
+// of the brand on a white tile, mirroring the reference mark.
+.eji-sidebar__mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--eji-primary-700);
+    font-size: var(--eji-fs-sm);
+    font-weight: var(--eji-fw-bold);
+    text-transform: uppercase;
+    letter-spacing: .02em;
+}
+
+.eji-sidebar__name {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: var(--eji-fs-md);
+    font-weight: var(--eji-fw-bold);
+    color: var(--eji-on-dark);
+}
+
+// ---------------------------------------------------------------------
+// Nav items
+// ---------------------------------------------------------------------
+.eji-sidebar__nav {
+    display: block;
+    width: 100%;
+}
+
+.eji-nav-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--eji-sp-2);
+    padding: var(--eji-sp-4) var(--eji-sp-3) var(--eji-sp-2);
+    font-size: var(--eji-fs-xs);
+    font-weight: var(--eji-fw-semibold);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--eji-side-muted);
+}
+
+.eji-nav-section__count {
+    font-weight: var(--eji-fw-regular);
+}
+
+.eji-nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--eji-sp-3);
+    min-height: 40px;
+    padding: var(--eji-sp-2) var(--eji-sp-3);
+    border-radius: var(--eji-r-md);
+    color: var(--eji-side-text);
+    font-size: var(--eji-fs-base);
+    text-decoration: none;
+    transition: background var(--eji-transition), color var(--eji-transition);
+
+    &:hover,
+    &:focus {
+        background: var(--eji-side-active);
+        color: var(--eji-on-dark);
+        text-decoration: none;
+    }
+
+    &.is-active {
+        background: var(--eji-side-active);
+        color: var(--eji-on-dark);
+        font-weight: var(--eji-fw-semibold);
+    }
+
+    &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 2px var(--eji-primary-100);
+    }
+}
+
+.eji-nav-item__ico {
+    flex: none;
+    width: 1rem;
+    text-align: center;
+    font-size: 1rem;
+    opacity: .9;
+}
+
+.eji-nav-item__text {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+// ---------------------------------------------------------------------
+// Persistent column from lg up
+//
+// Two things change at this breakpoint: the sidebar stops casting a shadow
+// over the page (it is no longer an overlay), and the OTHER left drawer - the
+// course index - has to start after it rather than at the screen edge.
+// Without that second rule the two would sit on top of each other inside a
+// course, which is the collision flagged as R2 in the analysis.
+// ---------------------------------------------------------------------
+@include media-breakpoint-up(lg) {
+    .eji-sidebar {
+        top: 0;
+        height: 100vh;
+        z-index: $zindex-fixed + 2;
+        box-shadow: none;
+    }
+
+    // Course index sits to the right of the EJI sidebar, never under it.
+    .drawer.eji-courseindex {
+        left: calc(var(--eji-nav-offset) - #{$drawer-left-width} - 10px);
+
+        &.show {
+            left: var(--eji-nav-offset);
+        }
+    }
+
+    // Boost pushes #page by the course index width when it is open. That is
+    // still correct - #page-wrapper has already absorbed the sidebar offset -
+    // so nothing more is needed for the content column here.
+}
+
+// Below lg the sidebar is an ordinary overlay drawer again: Boost draws the
+// backdrop and closes it on a backdrop click, the theme's own script closes it
+// on Escape, and the course index returns to the screen edge because
+// --eji-nav-offset is 0.
+@include media-breakpoint-down(lg) {
+    .eji-sidebar {
+        z-index: $zindex-fixed + 5;
+        box-shadow: $eji-sh-lg;
+    }
+}
+
+// ---------------------------------------------------------------------
+// Course index drawer - restyled, behaviour untouched
+//
+// The contents of this drawer are rendered by core_courseformat and carry
+// completion state, availability and section structure. Only colours and
+// spacing are touched.
+// ---------------------------------------------------------------------
+.eji-courseindex {
+    background: var(--eji-surface);
+    border-right: 1px solid var(--eji-line);
+
+    .drawerheader {
+        height: var(--eji-topbar-h);
+        border-bottom: 1px solid var(--eji-line);
+        padding: 0 var(--eji-sp-2) 0 var(--eji-sp-4);
+    }
+}
+
+.courseindex {
+    .courseindex-section {
+        border-bottom: 1px solid var(--eji-line);
+    }
+
+    .courseindex-item {
+        border-radius: var(--eji-r-sm);
+        font-size: var(--eji-fs-sm);
+
+        &:hover {
+            background: var(--eji-bg-alt);
+        }
+
+        // -----------------------------------------------------------------
+        // Current page item
+        //
+        // Core paints this solid $primary and, because of that, sets the text
+        // to color-contrast($primary) - white - on the item AND on the nested
+        // .courseindex-link / .courseindex-chevron / a.
+        //
+        // An earlier version of this file replaced only the BACKGROUND with a
+        // pale tint and left core's white text in place, which rendered the
+        // active item as white-on-near-white: it looked disabled even though
+        // it was perfectly clickable.
+        //
+        // The fix keeps core's solid-accent treatment and states both halves
+        // together, so background and text can never drift apart again.
+        // -----------------------------------------------------------------
+        &.pageitem {
+            background-color: var(--eji-accent-600);
+            color: var(--eji-on-dark);
+            font-weight: var(--eji-fw-semibold);
+
+            .courseindex-link,
+            .courseindex-chevron,
+            a {
+                color: var(--eji-on-dark);
+            }
+
+            // Completion tick and restriction padlock have to stay visible
+            // against the solid blue too.
+            .completioninfo .icon,
+            .courseindex-locked .icon {
+                color: var(--eji-on-dark);
+            }
+
+            // Hover on the item you are already on: one step darker, so the
+            // row still reacts to the pointer without losing contrast.
+            &:hover,
+            &:focus-within {
+                background-color: var(--eji-accent-700);
+            }
+        }
+    }
+
+    .courseindex-sectiontitle {
+        font-size: var(--eji-fs-sm);
+        font-weight: var(--eji-fw-semibold);
+        color: var(--eji-ink-800);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Blocks drawer
+// ---------------------------------------------------------------------
+.drawer.drawer-right {
+    background: var(--eji-surface);
+    border-left: 1px solid var(--eji-line);
+
+    .drawerheader {
+        height: var(--eji-topbar-h);
+        border-bottom: 1px solid var(--eji-line);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Secondary navigation (page tabs)
+// ---------------------------------------------------------------------
+.secondary-navigation {
+    margin-bottom: var(--eji-sp-4);
+
+    .nav-tabs {
+        border-bottom: 1px solid var(--eji-line);
+        gap: var(--eji-sp-1);
+    }
+
+    .nav-link {
+        height: 44px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 var(--eji-sp-4);
+        border: 0;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        border-radius: 0;
+        color: var(--eji-ink-500);
+        font-size: var(--eji-fs-base);
+        font-weight: var(--eji-fw-medium);
+
+        &:hover {
+            color: var(--eji-ink-800);
+            border-bottom-color: var(--eji-line-2);
+        }
+
+        &.active {
+            color: var(--eji-accent-600);
+            border-bottom-color: var(--eji-accent-600);
+            font-weight: var(--eji-fw-semibold);
+            background: transparent;
+        }
+    }
+}
+
+// Tertiary navigation select, used above reports and grade pages.
+.tertiary-navigation {
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: var(--eji-sp-4);
+}

@@ -1,0 +1,133 @@
+// =====================================================================
+// EJI ONE - progress
+//
+// The reference's progress rail is 6px tall, fully rounded, --eji-line behind
+// and the accent in front, with the percentage shown beside it rather than
+// inside. $progress-* in _tokens.scss already sets the Bootstrap side; this
+// file covers Moodle's own progress markup, which does not use .progress
+// everywhere.
+//
+// All percentages come from core (\core_completion\progress and the activity
+// modules). Nothing here computes or alters a value.
+// =====================================================================
+
+.progress {
+    height: 6px;
+    background: var(--eji-line);
+    border-radius: var(--eji-r-full);
+    overflow: hidden;
+    box-shadow: none;
+}
+
+.progress-bar {
+    background: var(--eji-accent-600);
+    border-radius: inherit;
+    transition: width .3s ease;
+}
+
+// Over 100% (possible on a graded item) reads as a warning, not as success.
+.progress-bar.bg-danger {
+    background: var(--eji-danger-600);
+}
+
+.progress-bar.bg-success {
+    background: var(--eji-success-600);
+}
+
+// ---------------------------------------------------------------------
+// Course progress on cards and course pages
+//
+// block_myoverview renders progress-bar.mustache with a label above the rail.
+// ---------------------------------------------------------------------
+.progress-text,
+[data-region="progress-text"] {
+    font-size: var(--eji-fs-xs);
+    font-weight: var(--eji-fw-semibold);
+    color: var(--eji-ink-600);
+    font-variant-numeric: tabular-nums;
+}
+
+.eji-progress-row {
+    display: flex;
+    align-items: center;
+    gap: var(--eji-sp-3);
+
+    .progress {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .eji-progress-value {
+        flex: none;
+        font-size: var(--eji-fs-xs);
+        font-weight: var(--eji-fw-semibold);
+        color: var(--eji-ink-700);
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+// ---------------------------------------------------------------------
+// Lesson progress bar
+//
+// mod_lesson draws this by hand in mod_lesson_renderer::progress_bar() as a
+// pair of nested divs, not as a Bootstrap progress bar. Restyled here rather
+// than overriding the renderer - see docs/moodle-eji-ui-analysis.md 6.5.
+// ---------------------------------------------------------------------
+.path-mod-lesson {
+    .progress_bar,
+    #lesson_progress_bar {
+        height: 6px;
+        background: var(--eji-line);
+        border-radius: var(--eji-r-full);
+        overflow: hidden;
+        margin: var(--eji-sp-4) 0;
+    }
+
+    .progress_bar_completed,
+    .progress_bar_token {
+        background: var(--eji-accent-600);
+        height: 6px;
+        border-radius: var(--eji-r-full);
+    }
+
+    .progress_bar_percent {
+        font-size: var(--eji-fs-xs);
+        font-weight: var(--eji-fw-semibold);
+        color: var(--eji-ink-600);
+    }
+}
+
+// ---------------------------------------------------------------------
+// SCORM and H5P progress
+// ---------------------------------------------------------------------
+.path-mod-scorm .progress,
+.path-mod-h5pactivity .progress {
+    height: 6px;
+}
+
+// ---------------------------------------------------------------------
+// Course completion progress on the course page
+// ---------------------------------------------------------------------
+.course-content .progress,
+#coursecontentcollapse .progress {
+    height: 6px;
+}
+
+// ---------------------------------------------------------------------
+// Spinners and loading states
+// ---------------------------------------------------------------------
+.spinner-border {
+    border-width: 2px;
+    color: var(--eji-accent-600);
+}
+
+.loading-icon .icon {
+    color: var(--eji-accent-600);
+}
+
+// Moodle's skeleton placeholders while a block loads.
+.placeholder,
+.bg-pulse-grey {
+    background: var(--eji-line);
+    border-radius: var(--eji-r-sm);
+}

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="local/ejicert/db" VERSION="2026100200" COMMENT="XMLDB file for local_ejicert"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="local_ejicert_ids" COMMENT="Permanent EJI Certificate ID for each tool_certificate issue">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="issueid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="tool_certificate_issues.id"/>
+        <FIELD NAME="certid" TYPE="char" LENGTH="40" NOTNULL="true" SEQUENCE="false" COMMENT="Human readable ID, e.g. EJI-CERT-2026-000001"/>
+        <FIELD NAME="year" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="seq" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Running number within the year"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="issueid" UNIQUE="true" FIELDS="issueid"/>
+        <INDEX NAME="certid" UNIQUE="true" FIELDS="certid"/>
+        <INDEX NAME="yearseq" UNIQUE="true" FIELDS="year, seq"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>

@@ -1,0 +1,78 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template core_course/coursecard
+
+    EJI ONE course card.
+
+    Overrides core's card so it carries the pieces the brief asks for - image,
+    title, category, progress and an explicit action - in the EJI card shape.
+
+    The context is core's, unchanged: it comes from course_summary_exporter via
+    block_myoverview, so enrolment, visibility, favourites and the progress
+    figure are all decided by Moodle. The blocks that core defines ($menu,
+    $progress, $coursename, $coursecategory) are still declared here, so
+    block_myoverview's own overrides of them keep working.
+
+    Context variables required for this template:
+    * id, fullname, shortname, viewurl, courseimage, visible
+    * showshortname, showcoursecategory, uniqid
+
+    Example context (json):
+    {
+        "id": 2,
+        "fullname": "Leadership Fundamentals",
+        "shortname": "LEAD-101",
+        "viewurl": "/course/view.php?id=2",
+        "courseimage": "",
+        "visible": true,
+        "showshortname": true,
+        "uniqid": "abc123"
+    }
+}}
+<div class="card course-card eji-course-card h-100" data-region="course-content" data-course-id="{{id}}">
+    <a href="{{viewurl}}" tabindex="-1" aria-hidden="true" class="eji-course-card__imglink">
+        <div class="card-img-top" style='background-image: url("{{{courseimage}}}");'>
+            <span class="visually-hidden">{{fullname}}</span>
+        </div>
+    </a>
+    <div class="card-body course-info-container" id="course-info-container-{{id}}-{{uniqid}}">
+        {{#showshortname}}
+            <div class="eji-course-card__shortname">
+                <span class="visually-hidden">{{#str}}aria:courseshortname, core_course{{/str}}</span>
+                {{{shortname}}}
+            </div>
+        {{/showshortname}}
+        <a href="{{viewurl}}" class="aalink coursename eji-course-card__name">
+            {{> core_course/favouriteicon }}
+            <span class="visually-hidden">{{#str}}aria:coursename, core_course{{/str}}</span>
+            {{$coursename}}{{fullname}}{{/coursename}}
+        </a>
+        <div class="eji-course-card__category">
+            {{$coursecategory}}{{/coursecategory}}
+        </div>
+        {{^visible}}
+            <div class="eji-course-card__badges">
+                <span class="badge bg-info">{{#str}} hiddenfromstudents {{/str}}</span>
+            </div>
+        {{/visible}}
+    </div>
+    <div class="eji-course-card__foot">
+        {{$progress}}{{/progress}}
+        {{$menu}}{{/menu}}
+    </div>
+</div>

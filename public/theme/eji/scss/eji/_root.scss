@@ -1,0 +1,139 @@
+// EJI ONE design tokens re-published as CSS custom properties.
+//
+// The SCSS variables in _tokens.scss are compile-time only; Bootstrap and
+// Moodle consume them and they disappear. EJI-specific components (sidebar,
+// KPI row, status badges, course cards) need the same values at runtime, and
+// so do any future inline styles. Emitting them here from the SAME variables
+// keeps one source of truth - this block can never drift from _tokens.scss.
+
+:root {
+    // Primary.
+    --eji-primary-900: #{$eji-primary-900};
+    --eji-primary-800: #{$eji-primary-800};
+    --eji-primary-700: #{$eji-primary-700};
+    --eji-primary-600: #{$eji-primary-600};
+    --eji-primary-500: #{$eji-primary-500};
+    --eji-primary-400: #{$eji-primary-400};
+    --eji-primary-100: #{$eji-primary-100};
+    --eji-primary-50: #{$eji-primary-50};
+
+    // Sidebar.
+    --eji-side-bg: #{$eji-side-bg};
+    --eji-side-active: #{$eji-side-active};
+    --eji-side-text: #{$eji-side-text};
+    --eji-side-muted: #{$eji-side-muted};
+
+    // Accent.
+    --eji-accent-700: #{$eji-accent-700};
+    --eji-accent-600: #{$eji-accent-600};
+    --eji-accent-50: #{$eji-accent-50};
+
+    // Feedback.
+    --eji-success-700: #{$eji-success-700};
+    --eji-success-600: #{$eji-success-600};
+    --eji-success-50: #{$eji-success-50};
+    --eji-warning-700: #{$eji-warning-700};
+    --eji-warning-600: #{$eji-warning-600};
+    --eji-warning-50: #{$eji-warning-50};
+    --eji-danger-700: #{$eji-danger-700};
+    --eji-danger-600: #{$eji-danger-600};
+    --eji-danger-50: #{$eji-danger-50};
+    --eji-excel-600: #{$eji-excel-600};
+
+    // Ink.
+    --eji-ink-900: #{$eji-ink-900};
+    --eji-ink-800: #{$eji-ink-800};
+    --eji-ink-700: #{$eji-ink-700};
+    --eji-ink-600: #{$eji-ink-600};
+    --eji-ink-500: #{$eji-ink-500};
+    --eji-ink-450: #{$eji-ink-450};
+    --eji-ink-400: #{$eji-ink-400};
+
+    // Surfaces.
+    --eji-bg: #{$eji-bg};
+    --eji-bg-alt: #{$eji-bg-alt};
+    --eji-surface: #{$eji-surface};
+    --eji-row-hover: #{$eji-row-hover};
+    --eji-line: #{$eji-line};
+    --eji-line-2: #{$eji-line-2};
+    --eji-on-dark: #{$eji-on-dark};
+    --eji-scrim: #{$eji-scrim};
+    --eji-veil: #{$eji-veil};
+
+    // Status.
+    --eji-st-draft: #{$eji-st-draft};
+    --eji-st-draft-ink: #{$eji-st-draft-ink};
+    --eji-st-draft-bg: #{$eji-st-draft-bg};
+    --eji-st-waiting: #{$eji-st-waiting};
+    --eji-st-waiting-ink: #{$eji-st-waiting-ink};
+    --eji-st-waiting-bg: #{$eji-st-waiting-bg};
+    --eji-st-onprocess: #{$eji-st-onprocess};
+    --eji-st-onprocess-ink: #{$eji-st-onprocess-ink};
+    --eji-st-onprocess-bg: #{$eji-st-onprocess-bg};
+    --eji-st-approved: #{$eji-st-approved};
+    --eji-st-approved-ink: #{$eji-st-approved-ink};
+    --eji-st-approved-bg: #{$eji-st-approved-bg};
+    --eji-st-revised: #{$eji-st-revised};
+    --eji-st-revised-ink: #{$eji-st-revised-ink};
+    --eji-st-revised-bg: #{$eji-st-revised-bg};
+    --eji-st-rejected: #{$eji-st-rejected};
+    --eji-st-rejected-ink: #{$eji-st-rejected-ink};
+    --eji-st-rejected-bg: #{$eji-st-rejected-bg};
+    --eji-st-cancelled: #{$eji-st-cancelled};
+    --eji-st-cancelled-ink: #{$eji-st-cancelled-ink};
+    --eji-st-cancelled-bg: #{$eji-st-cancelled-bg};
+    --eji-st-closed: #{$eji-st-closed};
+    --eji-st-closed-ink: #{$eji-st-closed-ink};
+    --eji-st-closed-bg: #{$eji-st-closed-bg};
+    --eji-st-hold: #{$eji-st-hold};
+    --eji-st-hold-ink: #{$eji-st-hold-ink};
+    --eji-st-hold-bg: #{$eji-st-hold-bg};
+
+    // Series.
+    --eji-c1: #{$eji-c1};
+    --eji-c2: #{$eji-c2};
+    --eji-c3: #{$eji-c3};
+    --eji-c4: #{$eji-c4};
+    --eji-c5: #{$eji-c5};
+    --eji-c6: #{$eji-c6};
+
+    // Type.
+    --eji-font: #{$eji-font};
+    --eji-font-mono: #{$eji-font-mono};
+    --eji-fs-xs: #{$eji-fs-xs};
+    --eji-fs-sm: #{$eji-fs-sm};
+    --eji-fs-base: #{$eji-fs-base};
+    --eji-fs-md: #{$eji-fs-md};
+    --eji-fs-lg: #{$eji-fs-lg};
+    --eji-fs-xl: #{$eji-fs-xl};
+    --eji-fs-kpi: #{$eji-fs-kpi};
+    --eji-fs-reading: #{$eji-fs-reading};
+    --eji-fw-regular: #{$eji-fw-regular};
+    --eji-fw-medium: #{$eji-fw-medium};
+    --eji-fw-semibold: #{$eji-fw-semibold};
+    --eji-fw-bold: #{$eji-fw-bold};
+    --eji-fw-extra: #{$eji-fw-extra};
+
+    // Spacing.
+    --eji-sp-1: #{$eji-sp-1};
+    --eji-sp-2: #{$eji-sp-2};
+    --eji-sp-3: #{$eji-sp-3};
+    --eji-sp-4: #{$eji-sp-4};
+    --eji-sp-5: #{$eji-sp-5};
+    --eji-sp-6: #{$eji-sp-6};
+    --eji-sp-8: #{$eji-sp-8};
+    --eji-sp-10: #{$eji-sp-10};
+
+    // Radius, elevation, motion, frame.
+    --eji-r-sm: #{$eji-r-sm};
+    --eji-r-md: #{$eji-r-md};
+    --eji-r-lg: #{$eji-r-lg};
+    --eji-r-full: #{$eji-r-full};
+    --eji-sh-sm: #{$eji-sh-sm};
+    --eji-sh-md: #{$eji-sh-md};
+    --eji-sh-lg: #{$eji-sh-lg};
+    --eji-sh-focus: 0 0 0 3px #{rgba($eji-accent-600, .25)};
+    --eji-transition: #{$eji-transition};
+    --eji-topbar-h: #{$eji-topbar-h};
+    --eji-side-width: #{$eji-side-width};
+}

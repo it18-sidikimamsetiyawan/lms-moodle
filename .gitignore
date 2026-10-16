@@ -1,0 +1,26 @@
+# Local secrets / environment (never commit)
+/config.php
+.env
+.env.*
+CREDENTIALS*.txt
+*.sql.gz
+*.dump
+/*.sql
+
+# Runtime / generated (root-level only, so core dirs like public/cache stay tracked)
+/moodledata/
+/node_modules/
+/vendor/
+/.esbuild/
+/.grunt/
+/logs/
+/localcache/
+/temp/
+/tmp/
+*.log
+*.tmp
+*.bak
+Thumbs.db
+.DS_Store
+.idea/
+.vscode/

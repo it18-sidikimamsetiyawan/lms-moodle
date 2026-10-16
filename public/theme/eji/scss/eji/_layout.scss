@@ -1,0 +1,244 @@
+// =====================================================================
+// EJI ONE - page frame
+//
+// Boost's frame is: fixed topbar, content pushed by whichever drawers are
+// open. EJI keeps that and adds one thing - a navigation column on the left
+// that, above 992px, is always there.
+//
+// The whole layout therefore hangs off a single custom property,
+// --eji-nav-offset, which is 0 when the sidebar is closed and the sidebar
+// width when it is open. Everything that has to move (topbar, page content,
+// the other two drawers, the sticky footer) reads that one value, so there is
+// no chance of them drifting out of step.
+// =====================================================================
+
+body {
+    // Boost sets this from $font-family-base already; restating it here keeps
+    // the rule close to the reading-size override below.
+    font-family: var(--eji-font);
+    background-color: var(--eji-bg);
+    color: var(--eji-ink-800);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+// The offset every other rule keys off. Default 0: correct for small screens,
+// for the login page, and for any layout that has no sidebar at all.
+body {
+    --eji-nav-offset: 0px;
+}
+
+@include media-breakpoint-up(lg) {
+    body.eji-layout.eji-nav-open {
+        --eji-nav-offset: var(--eji-side-width);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Topbar
+// ---------------------------------------------------------------------
+.eji-topbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: var(--eji-nav-offset);
+    z-index: $zindex-fixed;
+    height: var(--eji-topbar-h);
+    min-height: var(--eji-topbar-h);
+    padding: 0;
+    background: var(--eji-surface);
+    border-bottom: 1px solid var(--eji-line);
+    box-shadow: none;
+    transition: left .2s ease;
+}
+
+.eji-topbar__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--eji-sp-2);
+    width: 100%;
+    height: 100%;
+    padding: 0 var(--eji-sp-4);
+}
+
+.eji-topbar__toggle {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--eji-ink-500);
+    border: 0;
+    border-radius: var(--eji-r-md);
+    background: transparent;
+
+    &:hover {
+        background: var(--eji-bg-alt);
+        color: var(--eji-ink-800);
+    }
+}
+
+.eji-topbar__title {
+    margin: 0 0 0 var(--eji-sp-1);
+    font-size: var(--eji-fs-base);
+    font-weight: var(--eji-fw-semibold);
+    line-height: 1.3;
+    color: var(--eji-ink-800);
+    max-width: 16rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.eji-topbar__spacer {
+    flex: 1 1 auto;
+}
+
+.eji-topbar__actions {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--eji-sp-1);
+    height: 100%;
+}
+
+// Core renders the search box, popovers and user menu; only their chrome
+// changes here.
+.eji-topbar__search {
+    width: 17.5rem;
+    max-width: 26rem;
+
+    input[type="text"],
+    input[type="search"] {
+        height: 40px;
+        border: 1px solid var(--eji-line);
+        border-radius: var(--eji-r-md);
+        background: var(--eji-bg-alt);
+        font-size: var(--eji-fs-sm);
+    }
+}
+
+// Below the large breakpoint the title has to give way before the actions do.
+@include media-breakpoint-down(md) {
+    .eji-topbar__search {
+        display: none;
+    }
+    .eji-topbar__title {
+        max-width: 40vw;
+    }
+}
+
+// ---------------------------------------------------------------------
+// Page content
+// ---------------------------------------------------------------------
+#page-wrapper {
+    padding-left: var(--eji-nav-offset);
+    transition: padding-left .2s ease;
+}
+
+#page.drawers {
+    margin-top: var(--eji-topbar-h);
+    background: transparent;
+
+    .main-inner {
+        background: transparent;
+        padding: var(--eji-sp-6) var(--eji-sp-6) var(--eji-sp-4);
+        margin-top: 0;
+        margin-bottom: var(--eji-sp-8);
+        border-radius: 0;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    #page.drawers .main-inner {
+        padding: var(--eji-sp-4) var(--eji-sp-4) var(--eji-sp-3);
+    }
+}
+
+// Reading size. The 14px UI base from the reference is right for chrome and
+// dense tables, but course, lesson, quiz and forum content is read for minutes
+// at a time and needs more. Scoped to the content region so the surrounding
+// interface keeps the reference density.
+#region-main {
+    .course-content,
+    .activity-description,
+    .box.contents,
+    .no-overflow,
+    .que .formulation,
+    .forumpost,
+    [data-region="activity-information"] + * {
+        font-size: var(--eji-fs-reading);
+    }
+}
+
+.path-mod-lesson #region-main .contents,
+.path-mod-page #region-main .box,
+.path-mod-book #region-main .book_content {
+    font-size: var(--eji-fs-reading);
+}
+
+// ---------------------------------------------------------------------
+// Page header
+// ---------------------------------------------------------------------
+#page-header {
+    .page-context-header {
+        margin-bottom: var(--eji-sp-2);
+    }
+
+    h1,
+    .h1 {
+        font-size: var(--eji-fs-xl);
+        font-weight: var(--eji-fw-bold);
+        color: var(--eji-ink-900);
+        line-height: 1.3;
+    }
+}
+
+// Breadcrumb, matching the reference's small muted trail.
+.breadcrumb {
+    padding: 0;
+    margin-bottom: var(--eji-sp-3);
+    background: transparent;
+    font-size: var(--eji-fs-sm);
+    color: var(--eji-ink-500);
+
+    a {
+        color: var(--eji-accent-600);
+    }
+
+    .breadcrumb-item.active,
+    [aria-current="page"] {
+        font-weight: var(--eji-fw-semibold);
+        color: var(--eji-ink-800);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Footer
+// ---------------------------------------------------------------------
+#page-footer,
+.footer-content-popover {
+    background: transparent;
+}
+
+#page-footer .footer-content {
+    border-top: 1px solid var(--eji-line);
+    font-size: var(--eji-fs-xs);
+    color: var(--eji-ink-500);
+}
+
+// ---------------------------------------------------------------------
+// Print
+// ---------------------------------------------------------------------
+@media print {
+    body {
+        --eji-nav-offset: 0px;
+    }
+    #page-wrapper {
+        padding-left: 0;
+    }
+    .eji-topbar,
+    .eji-sidebar {
+        display: none !important; // stylelint-disable-line declaration-no-important
+    }
+}

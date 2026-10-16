@@ -1,0 +1,199 @@
+// =====================================================================
+// EJI ONE - forms
+//
+// Moodle renders forms through moodleforms (.mform), which produces its own
+// row/label/element structure rather than Bootstrap's. Both shapes are styled
+// here so that a quiz answer form, a settings page and a login box all read
+// the same.
+//
+// Nothing here changes validation, required-field logic or submission - only
+// how the controls look.
+// =====================================================================
+
+.form-control,
+.custom-select,
+.form-select,
+select.form-control {
+    min-height: 40px;
+    border-color: var(--eji-line-2);
+    color: var(--eji-ink-800);
+    transition: border-color var(--eji-transition), box-shadow var(--eji-transition);
+
+    &:hover:not(:disabled):not([readonly]) {
+        border-color: var(--eji-ink-400);
+    }
+
+    &:focus {
+        border-color: var(--eji-accent-600);
+        box-shadow: var(--eji-sh-focus);
+    }
+
+    &::placeholder {
+        color: var(--eji-ink-400);
+    }
+
+    &:disabled,
+    &[readonly] {
+        background: var(--eji-bg-alt);
+        color: var(--eji-ink-500);
+    }
+}
+
+.form-control-sm,
+.form-select-sm {
+    min-height: 32px;
+    font-size: var(--eji-fs-sm);
+}
+
+textarea.form-control {
+    min-height: 6rem;
+    line-height: 1.6;
+}
+
+// Labels.
+label,
+.col-form-label,
+.form-label {
+    font-size: var(--eji-fs-sm);
+    font-weight: var(--eji-fw-semibold);
+    color: var(--eji-ink-700);
+}
+
+.form-text,
+.form-control-feedback,
+.felement + .form-text {
+    font-size: var(--eji-fs-xs);
+    color: var(--eji-ink-500);
+}
+
+// Checkboxes and radios.
+.form-check-input {
+    border-color: var(--eji-line-2);
+    cursor: pointer;
+
+    &:checked {
+        background-color: var(--eji-accent-600);
+        border-color: var(--eji-accent-600);
+    }
+
+    &:focus {
+        border-color: var(--eji-accent-600);
+        box-shadow: var(--eji-sh-focus);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+}
+
+.form-check-label {
+    font-weight: var(--eji-fw-regular);
+    color: var(--eji-ink-800);
+    cursor: pointer;
+}
+
+// Validation.
+.is-invalid,
+.form-control.is-invalid {
+    border-color: var(--eji-danger-600);
+}
+
+.invalid-feedback,
+.form-control-feedback.invalid-feedback {
+    color: var(--eji-danger-700);
+    font-size: var(--eji-fs-xs);
+}
+
+// ---------------------------------------------------------------------
+// moodleforms
+// ---------------------------------------------------------------------
+.mform {
+    fieldset {
+        border: 0;
+        margin-bottom: var(--eji-sp-6);
+        padding: 0;
+    }
+
+    // Section headers inside a form.
+    .fheader,
+    legend {
+        font-size: var(--eji-fs-md);
+        font-weight: var(--eji-fw-semibold);
+        color: var(--eji-ink-900);
+    }
+
+    .fitem {
+        margin-bottom: var(--eji-sp-4);
+
+        .col-form-label {
+            padding-top: .55rem;
+        }
+    }
+
+    // The required marker.
+    .req,
+    .adv {
+        margin-left: var(--eji-sp-1);
+    }
+
+    // Collapsible advanced sections.
+    .fcontainer {
+        padding-top: var(--eji-sp-2);
+    }
+
+    // Action row.
+    .form-group.row.femptylabel,
+    .fitem_actionbuttons {
+        padding-top: var(--eji-sp-4);
+        border-top: 1px solid var(--eji-line);
+        margin-top: var(--eji-sp-4);
+    }
+}
+
+// Filter / search rows above tables and reports.
+.filter-form,
+[data-region="filter"],
+.tertiary-navigation .navitem {
+    .form-control,
+    .form-select {
+        min-height: 32px;
+        font-size: var(--eji-fs-sm);
+    }
+}
+
+// Moodle's inline autocomplete widget (used for user and tag pickers).
+.form-autocomplete-selection {
+    gap: var(--eji-sp-1);
+
+    .badge {
+        background: var(--eji-accent-50);
+        color: var(--eji-accent-700);
+    }
+}
+
+.form-autocomplete-suggestions {
+    border: 1px solid var(--eji-line);
+    border-radius: var(--eji-r-md);
+    box-shadow: var(--eji-sh-lg);
+    background: var(--eji-surface);
+
+    li[aria-selected="true"] {
+        background: var(--eji-accent-600);
+        color: var(--eji-on-dark);
+    }
+}
+
+// The file picker and drag-drop area.
+.filemanager,
+.filepicker {
+    border-radius: var(--eji-r-md);
+
+    .fp-btn-choose {
+        border-radius: var(--eji-r-md);
+    }
+}
+
+.dndupload-arrow,
+.dndupload-target {
+    border-radius: var(--eji-r-lg);
+}

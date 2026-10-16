@@ -1,0 +1,53 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template core/login_panel
+
+    Branding panel on the left of the EJI ONE login screen.
+
+    This overrides Boost's version, which advertises Moodle's own user, site
+    and country counts. Those numbers are about Moodle the product, not about
+    this installation, and they do not belong on an EJI login screen.
+
+    If the site has auth instructions configured, they replace the panel
+    entirely - the same rule Boost applies.
+
+    Context variables required for this template:
+    * ejibrand - Brand name.
+    * ejitagline - Line shown under the brand.
+    * leftinstructions - Optional site auth instructions, which take priority.
+
+    Example context (json):
+    {
+        "ejibrand": "EJI",
+        "ejitagline": "EJI Learning Portal",
+        "leftinstructions": ""
+    }
+}}
+<div class="login-layout-left-content eji-login__panel">
+    {{^leftinstructions}}
+        <div class="eji-login__brand">
+            <span class="eji-login__brandname">{{ejibrand}}</span>
+        </div>
+        <p class="eji-login__tagline">{{ejitagline}}</p>
+    {{/leftinstructions}}
+    {{#leftinstructions}}
+        <div class="eji-login__instructions">
+            {{{leftinstructions}}}
+        </div>
+    {{/leftinstructions}}
+</div>

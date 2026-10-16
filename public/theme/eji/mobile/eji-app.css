@@ -1,0 +1,110 @@
+/*
+ * EJI ONE - Moodle App (mobile) stylesheet.
+ *
+ * Loaded by the official Moodle App through Site administration > Mobile app >
+ * Mobile appearance > CSS (tool_mobile | mobilecssurl). The app never uses the
+ * web theme's compiled CSS; it only reads this file, so the palette below is a
+ * hand transcription of scss/eji/_tokens.scss. Keep the two in step.
+ *
+ * Variable names follow moodlehq/moodleapp src/theme/theme.light.scss and the
+ * generate-color-variants() mixin in src/theme/helpers/custom.mixins.scss.
+ *
+ * After editing, bump the ?v= query on mobilecssurl so installed apps refetch.
+ */
+
+/* ---------------------------------------------------------------------
+ * Brand colour (both light and dark). $eji-accent-600 = #1d4ed8.
+ * shade = 12% black mix, tint = 10% white mix, as Ionic computes them.
+ * ------------------------------------------------------------------- */
+:root {
+    --primary: #1d4ed8;
+    --primary-shade: #1a45be;
+    --primary-tint: #3460dc;
+    --primary-contrast: #ffffff;
+
+    --ion-color-primary: var(--primary);
+    --ion-color-primary-base: var(--ion-color-primary);
+    --ion-color-primary-rgb: 29, 78, 216;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-color-primary-contrast-rgb: 255, 255, 255;
+    --ion-color-primary-shade: #1a45be;
+    --ion-color-primary-tint: #3460dc;
+
+    --a11y-shadow-focus-boxShadowColor: #1d4ed8;
+}
+
+/* ---------------------------------------------------------------------
+ * Light theme. Mirrors the web layout: white topbar, navy sidebar
+ * (here: the bottom tab bar), #f4f6fb page background.
+ * ------------------------------------------------------------------- */
+:root:not(.dark) {
+    --background-color: #f4f6fb;          /* $eji-bg */
+    --text-color: #1e293b;                /* $eji-ink-800 */
+    --subdued-text-color: #64748b;        /* $eji-ink-500 */
+    --stroke: #e2e8f0;                    /* $eji-line */
+    --ion-text-color-rgb: 30, 41, 59;
+    --ion-background-color-rgb: 244, 246, 251;
+
+    --core-link-color: #1d4ed8;
+
+    /* Topbar. */
+    --core-header-toolbar-background: #ffffff;
+    --core-header-toolbar-color: #0f172a; /* $eji-ink-900 */
+    --core-header-toolbar-border-color: #e2e8f0;
+
+    /* Bottom navigation = EJI sidebar. */
+    --core-bottom-tabs-background: #152568;          /* $eji-side-bg */
+    --core-bottom-tabs-color: #93a2d4;               /* $eji-side-muted */
+    --core-bottom-tabs-color-selected: #ffffff;
+    --core-bottom-tabs-background-selected: #2a3d8c; /* $eji-side-active */
+    --core-bottom-tabs-border-color-active: #ffffff;
+    --core-bottom-tabs-badge-color: #d12b2b;         /* $eji-danger-600 */
+    --core-bottom-tabs-badge-text-color: #ffffff;
+
+    /* In-page tabs. */
+    --core-tabs-background: #ffffff;
+    --core-tab-color: #64748b;
+    --core-tab-color-active: #1d4ed8;
+    --core-tab-border-color: #e2e8f0;
+    --core-tab-border-color-active: #1d4ed8;
+
+    /* Progress - 6px-style rail from the web theme. */
+    --core-progressbar-color: #1d4ed8;
+    --core-progressbar-background: #e2e8f0;
+    --core-progressbar-text-color: #475569;
+
+    /* Login screen. */
+    --core-login-background: #f4f6fb;
+    --core-login-text-color: #0f172a;
+    --core-login-input-background: #ffffff;
+    --core-login-input-color: #1e293b;
+
+    /* Tables. */
+    --core-table-header-background: #f8fafc;
+    --core-table-border-color: #e2e8f0;
+    --core-table-odd-cell-background: #ffffff;
+    --core-table-even-cell-background: #f8fafc;
+
+    /* Cards float on the tinted background, as on the web. */
+    --ion-card-background: #ffffff;
+    --ion-item-background: #ffffff;
+}
+
+/* ---------------------------------------------------------------------
+ * Dark theme. Keep the app's own dark surfaces; only lift the brand blue
+ * so it stays readable (80% mix with white, as the app does for primary).
+ * ------------------------------------------------------------------- */
+:root.dark {
+    --primary: #4a71e0;
+    --primary-shade: #4163c5;
+    --primary-tint: #5c7fe3;
+    --ion-color-primary: var(--primary);
+    --ion-color-primary-rgb: 74, 113, 224;
+    --ion-color-primary-shade: #4163c5;
+    --ion-color-primary-tint: #5c7fe3;
+    --core-link-color: #7c9bf0;
+    --core-tab-color-active: #7c9bf0;
+    --core-tab-border-color-active: #4a71e0;
+    --core-progressbar-color: #4a71e0;
+    --core-bottom-tabs-border-color-active: #4a71e0;
+}

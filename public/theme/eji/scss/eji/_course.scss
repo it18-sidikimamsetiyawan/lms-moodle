@@ -1,0 +1,261 @@
+// =====================================================================
+// EJI ONE - course page
+//
+// The course page is rendered by core_courseformat as a set of Mustache
+// components. Those components carry completion state, availability
+// conditions, prerequisites, visibility and section structure - all of which
+// must keep working exactly as core intends. Only their appearance is changed
+// here; no course format template is overridden and no behaviour is touched.
+//
+// Target shape, from the brief:
+//
+//   01  Introduction              Completed
+//   02  Leadership Principles     In progress
+//   03  Communication             Locked
+//
+// Moodle already emits the numbering (section order), the title, and the
+// completion / availability state. This turns them into the EJI row.
+// =====================================================================
+
+// ---------------------------------------------------------------------
+// Course header
+// ---------------------------------------------------------------------
+.path-course-view {
+    #page-header .page-context-header .page-header-headings h1 {
+        font-size: var(--eji-fs-xl);
+        font-weight: var(--eji-fw-bold);
+        color: var(--eji-ink-900);
+    }
+
+    .course-summary,
+    #coursecontentcollapse + .summary {
+        color: var(--eji-ink-600);
+        font-size: var(--eji-fs-reading);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Sections
+// ---------------------------------------------------------------------
+.course-content {
+    ul.topics,
+    ul.weeks,
+    ul.sections {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .course-section {
+        background: var(--eji-surface);
+        border: 1px solid var(--eji-line);
+        border-radius: var(--eji-r-lg);
+        box-shadow: var(--eji-sh-sm);
+        margin-bottom: var(--eji-sp-4);
+        overflow: hidden;
+    }
+
+    // The section header bar.
+    .course-section-header {
+        padding: var(--eji-sp-4) var(--eji-sp-5);
+        background: var(--eji-surface);
+        border-bottom: 1px solid var(--eji-line);
+
+        .sectionname,
+        h3 {
+            margin: 0;
+            font-size: var(--eji-fs-md);
+            font-weight: var(--eji-fw-semibold);
+            color: var(--eji-ink-900);
+
+            a {
+                color: inherit;
+
+                &:hover {
+                    color: var(--eji-accent-600);
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+
+    .section_action_menu,
+    .section-actions {
+        margin-left: auto;
+    }
+
+    // Section summary text.
+    .course-section .summarytext {
+        padding: var(--eji-sp-3) var(--eji-sp-5) 0;
+        color: var(--eji-ink-600);
+        font-size: var(--eji-fs-reading);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Activities
+//
+// One activity per row: icon, name, meta, state. Matches the reference's
+// list-row pattern rather than Boost's card-per-activity.
+// ---------------------------------------------------------------------
+.course-content .section {
+    padding: 0;
+    margin: 0;
+
+    .activity {
+        margin: 0;
+        padding: 0;
+        border-bottom: 1px solid var(--eji-line);
+
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
+
+    .activity-item {
+        padding: var(--eji-sp-4) var(--eji-sp-5);
+        border: 0;
+        border-radius: 0;
+        background: var(--eji-surface);
+        transition: background var(--eji-transition);
+
+        &:hover {
+            background: var(--eji-row-hover);
+        }
+    }
+
+    .activityname a,
+    .activity-item .aalink {
+        font-size: var(--eji-fs-base);
+        font-weight: var(--eji-fw-medium);
+        color: var(--eji-ink-800);
+
+        &:hover {
+            color: var(--eji-accent-600);
+            text-decoration: none;
+        }
+    }
+
+    // Activity type icon tile.
+    .activityiconcontainer {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--eji-r-md);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    // The per-activity metadata line (dates, grades, completion conditions).
+    .activity-altcontent,
+    .activity-dates,
+    .activity-information {
+        font-size: var(--eji-fs-xs);
+        color: var(--eji-ink-500);
+    }
+
+    // Completion control on the right of the row.
+    .activity-completion {
+        margin-left: auto;
+    }
+}
+
+// Activities the learner cannot open yet.
+.course-content .activity-item.restricted {
+    background: var(--eji-bg-alt);
+
+    .activityname a {
+        color: var(--eji-ink-500);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Course index drawer items
+// ---------------------------------------------------------------------
+.courseindex-item-content .completioninfo {
+    color: var(--eji-success-600);
+}
+
+// ---------------------------------------------------------------------
+// Course listing / catalogue
+// ---------------------------------------------------------------------
+.course_category_tree,
+.courses {
+    .coursebox {
+        background: var(--eji-surface);
+        border: 1px solid var(--eji-line);
+        border-radius: var(--eji-r-lg);
+        box-shadow: var(--eji-sh-sm);
+        padding: var(--eji-sp-4) var(--eji-sp-5);
+        margin-bottom: var(--eji-sp-3);
+
+        .coursename a {
+            font-size: var(--eji-fs-md);
+            font-weight: var(--eji-fw-semibold);
+            color: var(--eji-ink-900);
+
+            &:hover {
+                color: var(--eji-accent-600);
+                text-decoration: none;
+            }
+        }
+
+        .summary {
+            color: var(--eji-ink-600);
+            font-size: var(--eji-fs-sm);
+        }
+    }
+
+    .categoryname {
+        font-size: var(--eji-fs-md);
+        font-weight: var(--eji-fw-semibold);
+        color: var(--eji-ink-900);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Activity header (shown at the top of every activity page)
+// ---------------------------------------------------------------------
+// Boost indents this with `#page.drawers .activity-header { margin: 0 15px }`,
+// which outranks a bare class. Matching that selector wins on source order
+// instead of reaching for !important. `.path-mod` adds its own centring rule
+// in modules.scss, so that one is matched too.
+#page.drawers .activity-header,
+.path-mod #page.drawers .activity-header {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.activity-header {
+    margin-bottom: var(--eji-sp-5);
+
+    .activity-description {
+        margin-top: var(--eji-sp-3);
+    }
+
+    [data-region="activity-information"] {
+        font-size: var(--eji-fs-sm);
+    }
+}
+
+// Di layout embedded (iframe H5P: /h5p/embed.php) .activity-header dirender KOSONG.
+// Margin bawahnya lalu "bocor" lewat margin collapsing dan mendorong isi embed 20px ke
+// bawah, sementara tinggi iframe dihitung tanpa offset itu — 20px terbawah setiap H5P
+// (control bar video, footer Course Presentation) terpotong.
+.pagelayout-embedded .activity-header {
+    margin-bottom: 0;
+}
+
+// ---------------------------------------------------------------------
+// Activity navigation (Previous / Next at the foot of an activity)
+// ---------------------------------------------------------------------
+.activity-navigation {
+    margin-top: var(--eji-sp-6);
+    padding-top: var(--eji-sp-4);
+    border-top: 1px solid var(--eji-line);
+
+    .btn,
+    .urlselect .custom-select {
+        min-height: 40px;
+    }
+}

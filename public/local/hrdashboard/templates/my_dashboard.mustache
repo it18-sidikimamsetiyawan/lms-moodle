@@ -1,0 +1,219 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_hrdashboard/my_dashboard
+
+    Personal "My Learning" workspace. Only the logged-in learner's data.
+
+    Context variables required for this template:
+    * greeting, subtitle, hrurl (false when not HR)
+    * hero - {hasprogress, progress, done, total, completedcourses, totalcourses, pending}
+    * stats - {stats: [...]}
+    * courses - cards; hascourses; allcompleted
+    * pending - rows; haspending
+    * split - {done, pending, donepct}; streak; streakstr; streaktext
+    * timeline - [{label, entries: [{timestr, text, sub, url, type}]}]; hastimeline; timelinedays
+
+    Example context (json):
+    {
+        "greeting": "Good morning, Dewi", "subtitle": "Here is your learning progress.", "hrurl": false,
+        "hero": {"hasprogress": true, "progress": 72, "done": 8, "total": 11, "completedcourses": 1, "totalcourses": 3, "pending": 3},
+        "stats": {"stats": []}, "courses": [], "hascourses": false, "allcompleted": false,
+        "pending": [], "haspending": false, "split": {"done": 8, "pending": 3, "donepct": 72},
+        "streak": 0, "streakstr": "0 day(s) in a row", "streaktext": "", "timeline": [], "hastimeline": false, "timelinedays": 30
+    }
+}}
+<div class="hrd" id="hrd-my">
+    <div class="hrd-pagehead">
+        <div class="hrd-greeting">
+            <h2>{{greeting}}</h2>
+            <p>{{subtitle}}</p>
+        </div>
+        {{#hrurl}}<div class="hrd-pagehead__actions"><a class="btn btn-outline-secondary btn-sm" href="{{{hrurl}}}">{{#str}}openhrdashboard, local_hrdashboard{{/str}}</a></div>{{/hrurl}}
+    </div>
+
+    <div class="hrd-hero">
+        <section class="hrd-surface hrd-hero__main" aria-labelledby="hrd-hero-title">
+            <span class="hrd-hero__label" id="hrd-hero-title">{{#str}}hero:label, local_hrdashboard{{/str}}</span>
+            {{#hero.hasprogress}}
+            <span class="hrd-hero__value">{{hero.progress}}<small>%</small></span>
+            <div class="hrd-hero__bar">
+                <div class="progress" role="progressbar" aria-valuenow="{{hero.progress}}" aria-valuemin="0" aria-valuemax="100" aria-label="{{#str}}hero:label, local_hrdashboard{{/str}}">
+                    <div class="progress-bar" style="width: {{hero.progress}}%"></div>
+                </div>
+            </div>
+            {{/hero.hasprogress}}
+            {{^hero.hasprogress}}<span class="hrd-hero__value">—</span>{{/hero.hasprogress}}
+            <div class="hrd-hero__foot">
+                <span>{{#str}}hero:activities, local_hrdashboard, { "done": "{{hero.done}}", "total": "{{hero.total}}" }{{/str}}</span>
+                <span>{{#str}}hero:courses, local_hrdashboard, { "completed": "{{hero.completedcourses}}", "total": "{{hero.totalcourses}}" }{{/str}}</span>
+                <span>{{#str}}hero:pending, local_hrdashboard, {{hero.pending}}{{/str}}</span>
+            </div>
+        </section>
+        <div class="hrd-surface hrd-hero__side" role="list">
+            {{#stats.stats}}
+            {{#hasurl}}<a class="hrd-stat hrd-stat--{{tone}}" role="listitem" href="{{{url}}}">{{/hasurl}}
+            {{^hasurl}}<div class="hrd-stat hrd-stat--{{tone}}" role="listitem">{{/hasurl}}
+                <span class="hrd-stat__label">{{label}}</span>
+                <span class="hrd-stat__value">{{value}}</span>
+                {{#hassub}}<span class="hrd-stat__sub">{{sub}}</span>{{/hassub}}
+            {{#hasurl}}</a>{{/hasurl}}
+            {{^hasurl}}</div>{{/hasurl}}
+            {{/stats.stats}}
+        </div>
+    </div>
+
+    <section aria-labelledby="hrd-cont-title">
+        <div class="hrd-sectiontitle">
+            <h3 id="hrd-cont-title">{{#str}}section:continue, local_hrdashboard{{/str}}</h3>
+            <p>{{#str}}section:continuedesc, local_hrdashboard{{/str}}</p>
+        </div>
+        {{#hascourses}}
+        <div class="hrd-courses">
+            {{#courses}}
+            <article class="hrd-course">
+                <a class="hrd-course__img{{#image}} has-image{{/image}}" href="{{{viewurl}}}" {{#image}}style="background-image:url('{{{image}}}')"{{/image}} aria-hidden="true" tabindex="-1"></a>
+                <div class="hrd-course__body">
+                    <div class="hrd-course__top">
+                        <span class="hrd-course__cat">{{category}}</span>
+                        {{#status}}{{> local_hrdashboard/status }}{{/status}}
+                    </div>
+                    <h4 class="hrd-course__name"><a href="{{{viewurl}}}">{{fullname}}</a></h4>
+                    {{#progress}}{{> local_hrdashboard/progress }}{{/progress}}
+                    {{#hasactivities}}<span class="hrd-course__count">{{#str}}activitiescompleted, local_hrdashboard, { "done": "{{done}}", "total": "{{tracked}}" }{{/str}}</span>{{/hasactivities}}
+                    <dl class="hrd-course__meta">
+                        <div><dt>{{#str}}lastactivityshort, local_hrdashboard{{/str}}</dt><dd title="{{lastactivity}}">{{lastactivity}}</dd></div>
+                        <div><dt>{{#str}}nextactivityshort, local_hrdashboard{{/str}}</dt><dd title="{{nextactivity}}">{{nextactivity}}</dd></div>
+                        {{#hasdue}}<div><dt>{{#str}}dueshort, local_hrdashboard{{/str}}</dt><dd class="{{duecls}}">{{duelabel}}</dd></div>{{/hasdue}}
+                        {{#score}}<div><dt>{{#str}}col:score, local_hrdashboard{{/str}}</dt><dd>{{score}}</dd></div>{{/score}}
+                    </dl>
+                </div>
+                <div class="hrd-course__foot">
+                    <a class="btn btn-primary btn-sm" href="{{{buttonurl}}}">{{buttonlabel}}</a>
+                    <a class="btn btn-link btn-sm" href="{{{detailurl}}}">{{#str}}viewdetail, local_hrdashboard{{/str}}</a>
+                </div>
+            </article>
+            {{/courses}}
+        </div>
+        {{/hascourses}}
+        {{^hascourses}}
+        <div class="hrd-surface">
+            <div class="hrd-empty">
+                <span class="hrd-empty__icon" aria-hidden="true">{{#pix}}i/checkedcircle, core{{/pix}}</span>
+                {{#allcompleted}}
+                <p class="hrd-empty__title">{{#str}}empty:allcompletedtitle, local_hrdashboard{{/str}}</p>
+                <p class="hrd-empty__text">{{#str}}empty:allcompletedtext, local_hrdashboard{{/str}}</p>
+                {{/allcompleted}}
+                {{^allcompleted}}
+                <p class="hrd-empty__title">{{#str}}empty:nocoursestitle, local_hrdashboard{{/str}}</p>
+                <p class="hrd-empty__text">{{#str}}empty:nocoursestext, local_hrdashboard{{/str}}</p>
+                {{/allcompleted}}
+            </div>
+        </div>
+        {{/hascourses}}
+    </section>
+
+    <div class="hrd-two">
+        <section class="hrd-surface" aria-labelledby="hrd-pend-title">
+            <div class="hrd-surface__head hrd-surface__head--divided">
+                <div>
+                    <h3 class="hrd-surface__title" id="hrd-pend-title">{{#str}}section:pending, local_hrdashboard{{/str}}</h3>
+                    <p class="hrd-surface__desc">{{#str}}section:pendingdesc, local_hrdashboard{{/str}}</p>
+                </div>
+            </div>
+            <div class="hrd-surface__body hrd-surface__body--flush">
+                {{#haspending}}
+                <ul class="hrd-list">
+                    {{#pending}}
+                    <li class="hrd-list__item">
+                        <span class="hrd-list__icon" aria-hidden="true"><img src="{{{icon}}}" alt=""></span>
+                        <div class="hrd-list__main">
+                            <a class="hrd-list__title" href="{{{url}}}">{{name}}</a>
+                            <span class="hrd-list__meta">{{modnamestr}} · <a href="{{{courseurl}}}">{{coursename}}</a></span>
+                        </div>
+                        <div class="hrd-list__side">
+                            <span class="hrd-badge hrd-badge--{{duestatus}}">{{duelabel}}</span>
+                            <a class="btn btn-sm {{#isoverdue}}btn-primary{{/isoverdue}}{{^isoverdue}}btn-outline-secondary{{/isoverdue}}" href="{{{url}}}">{{actionlabel}}</a>
+                        </div>
+                    </li>
+                    {{/pending}}
+                </ul>
+                {{/haspending}}
+                {{^haspending}}
+                <div class="hrd-empty">
+                    <span class="hrd-empty__icon" aria-hidden="true">{{#pix}}i/checkedcircle, core{{/pix}}</span>
+                    <p class="hrd-empty__title">{{#str}}empty:nopendingtitle, local_hrdashboard{{/str}}</p>
+                    <p class="hrd-empty__text">{{#str}}empty:nopendingtext, local_hrdashboard{{/str}}</p>
+                </div>
+                {{/haspending}}
+            </div>
+        </section>
+
+        <div class="d-flex flex-column gap-3">
+            <section class="hrd-surface" aria-labelledby="hrd-prog-title">
+                <div class="hrd-surface__head">
+                    <div>
+                        <h3 class="hrd-surface__title" id="hrd-prog-title">{{#str}}section:myprogress, local_hrdashboard{{/str}}</h3>
+                        <p class="hrd-surface__desc">{{#str}}completedvspending, local_hrdashboard{{/str}}</p>
+                    </div>
+                </div>
+                <div class="hrd-surface__body">
+                    <div class="hrd-split" role="img" aria-label="{{split.done}} / {{split.total}}">
+                        <div class="hrd-split__done" style="width:{{split.donepct}}%"></div>
+                    </div>
+                    <div class="hrd-split__legend">
+                        <span><i class="done"></i>{{#str}}kpi:completed, local_hrdashboard{{/str}}: <strong>{{split.done}}</strong></span>
+                        <span><i></i>{{#str}}col:pending, local_hrdashboard{{/str}}: <strong>{{split.pending}}</strong></span>
+                    </div>
+                    <div class="hrd-streak">
+                        <span class="hrd-streak__value">{{streak}}</span>
+                        <span class="hrd-streak__text"><strong>{{#str}}streak, local_hrdashboard{{/str}} · {{streakstr}}</strong>{{streaktext}}</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="hrd-surface" aria-labelledby="hrd-tl-title">
+                <div class="hrd-surface__head hrd-surface__head--divided">
+                    <div>
+                        <h3 class="hrd-surface__title" id="hrd-tl-title">{{#str}}section:timeline, local_hrdashboard{{/str}}</h3>
+                    </div>
+                </div>
+                <div class="hrd-surface__body hrd-surface__body--flush">
+                    {{#hastimeline}}
+                    <ul class="hrd-timeline">
+                        {{#timeline}}
+                        <li class="hrd-timeline__day">{{label}}</li>
+                        {{#entries}}
+                        <li class="hrd-timeline__item hrd-timeline__item--{{type}}">
+                            <span class="hrd-timeline__text">{{#url}}<a href="{{{url}}}">{{text}}</a>{{/url}}{{^url}}{{text}}{{/url}}{{#sub}}<span class="hrd-timeline__sub">{{sub}}</span>{{/sub}}</span>
+                            <span class="hrd-timeline__time">{{timestr}}</span>
+                        </li>
+                        {{/entries}}
+                        {{/timeline}}
+                    </ul>
+                    {{/hastimeline}}
+                    {{^hastimeline}}
+                    <div class="hrd-empty">
+                        <p class="hrd-empty__title">{{#str}}empty:notimelinetitle, local_hrdashboard{{/str}}</p>
+                        <p class="hrd-empty__text">{{#str}}empty:notimelinetext, local_hrdashboard, {{timelinedays}}{{/str}}</p>
+                    </div>
+                    {{/hastimeline}}
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

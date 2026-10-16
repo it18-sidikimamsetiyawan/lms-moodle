@@ -1,0 +1,199 @@
+// =====================================================================
+// EJI ONE - Lesson
+//
+// mod_lesson renders the learner-facing pages from a PHP renderer
+// (mod/lesson/renderer.php), not from Mustache templates - the four templates
+// the module ships are all editing screens. See §6.5 of
+// docs/moodle-eji-ui-analysis.md.
+//
+// The approach here is therefore CSS-only, against the markup the renderer
+// actually emits. That is deliberate rather than a compromise: the brief asks
+// that the real Lesson activity be used and not replaced with a fake UI, and
+// the surest way to honour that is never to touch how it is produced. Lesson
+// navigation, page branching, question handling, attempt recording and
+// completion all remain core behaviour.
+// =====================================================================
+
+.path-mod-lesson {
+
+    // -----------------------------------------------------------------
+    // Page content
+    // -----------------------------------------------------------------
+    #region-main .contents,
+    .box.contents {
+        font-size: var(--eji-fs-reading);
+        line-height: 1.7;
+        color: var(--eji-ink-800);
+
+        h1, h2, h3, h4 {
+            color: var(--eji-ink-900);
+            margin-top: var(--eji-sp-6);
+            margin-bottom: var(--eji-sp-3);
+        }
+
+        h1:first-child,
+        h2:first-child {
+            margin-top: 0;
+        }
+
+        p {
+            margin-bottom: var(--eji-sp-4);
+        }
+
+        ul,
+        ol {
+            margin-bottom: var(--eji-sp-4);
+            padding-left: var(--eji-sp-6);
+        }
+
+        li {
+            margin-bottom: var(--eji-sp-1);
+        }
+
+        // Media inside a lesson page should never overflow the column.
+        img,
+        video,
+        iframe {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--eji-r-md);
+        }
+
+        blockquote {
+            border-left: 3px solid var(--eji-accent-600);
+            padding-left: var(--eji-sp-4);
+            color: var(--eji-ink-600);
+            margin-left: 0;
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Page title
+    // -----------------------------------------------------------------
+    #region-main > h3,
+    .lessonpagetitle {
+        font-size: var(--eji-fs-lg);
+        font-weight: var(--eji-fw-semibold);
+        color: var(--eji-ink-900);
+        padding-bottom: var(--eji-sp-3);
+        border-bottom: 1px solid var(--eji-line);
+        margin-bottom: var(--eji-sp-5);
+    }
+
+    // -----------------------------------------------------------------
+    // Answer / navigation buttons
+    //
+    // The renderer emits these as a moodleform with submit buttons, or as
+    // .branchbuttoncontainer for content pages.
+    // -----------------------------------------------------------------
+    .branchbuttoncontainer,
+    .lessonbutton {
+        display: inline-flex;
+        margin: var(--eji-sp-2) var(--eji-sp-2) var(--eji-sp-2) 0;
+
+        .btn,
+        input[type="submit"] {
+            min-height: 40px;
+            border-radius: var(--eji-r-md);
+            font-weight: var(--eji-fw-semibold);
+        }
+    }
+
+    // The Previous / Next row at the foot of a page.
+    .lesson-nav,
+    .continuebutton,
+    #region-main .singlebutton {
+        margin-top: var(--eji-sp-6);
+        padding-top: var(--eji-sp-4);
+        border-top: 1px solid var(--eji-line);
+    }
+
+    // -----------------------------------------------------------------
+    // Answer options on question pages
+    //
+    // Same visual language as the quiz options, so a learner sees one pattern
+    // across both activities.
+    // -----------------------------------------------------------------
+    .answeroption {
+        display: block;
+        padding: var(--eji-sp-3) var(--eji-sp-4);
+        margin-bottom: var(--eji-sp-2);
+        border: 1px solid var(--eji-line);
+        border-radius: var(--eji-r-md);
+        background: var(--eji-surface);
+        transition: border-color var(--eji-transition), background var(--eji-transition);
+
+        &:hover {
+            border-color: var(--eji-accent-600);
+            background: var(--eji-accent-50);
+        }
+
+        label {
+            font-weight: var(--eji-fw-regular);
+            color: var(--eji-ink-800);
+            cursor: pointer;
+            margin-bottom: 0;
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Feedback and end-of-lesson
+    // -----------------------------------------------------------------
+    .feedback,
+    .lessonfeedback {
+        border-radius: var(--eji-r-md);
+        padding: var(--eji-sp-4) var(--eji-sp-5);
+        border: 1px solid var(--eji-line);
+        background: var(--eji-bg-alt);
+    }
+
+    .correct {
+        border-color: var(--eji-success-600);
+        background: var(--eji-success-50);
+        color: var(--eji-success-700);
+    }
+
+    .incorrect {
+        border-color: var(--eji-danger-600);
+        background: var(--eji-danger-50);
+        color: var(--eji-danger-700);
+    }
+
+    // The score / grade summary on the end-of-lesson page.
+    .lessonstats,
+    #region-main .generaltable.lessonstats {
+        font-size: var(--eji-fs-sm);
+    }
+
+    // -----------------------------------------------------------------
+    // Lesson menu block (the page list in the side drawer)
+    // -----------------------------------------------------------------
+    .block_lesson_menu,
+    .block.block_lesson_menu {
+        .list-group-item,
+        li {
+            font-size: var(--eji-fs-sm);
+        }
+
+        a:hover {
+            color: var(--eji-accent-600);
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Slideshow mode
+    // -----------------------------------------------------------------
+    .slideshow {
+        border: 1px solid var(--eji-line);
+        border-radius: var(--eji-r-lg);
+        padding: var(--eji-sp-6);
+        background: var(--eji-surface);
+    }
+
+    // -----------------------------------------------------------------
+    // Teacher-facing tabs (edit, reports, grade essays)
+    // -----------------------------------------------------------------
+    .tabtree {
+        margin-bottom: var(--eji-sp-5);
+    }
+}

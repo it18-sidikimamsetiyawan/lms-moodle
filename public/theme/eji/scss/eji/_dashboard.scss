@@ -1,0 +1,438 @@
+// =====================================================================
+// EJI ONE - dashboard
+//
+// The welcome line, KPI row and "Continue learning" card that sit above
+// Moodle's dashboard blocks, plus the course cards that block_myoverview
+// renders on the dashboard and on My courses.
+//
+// The KPI grid follows the reference: five-across on wide screens, collapsing
+// to three and then two rather than to one, so the row keeps reading as a row.
+// =====================================================================
+
+.eji-dash {
+    display: flex;
+    flex-direction: column;
+    gap: var(--eji-sp-5);
+    margin-bottom: var(--eji-sp-5);
+}
+
+.eji-dash__welcome {
+    margin: 0;
+    font-size: var(--eji-fs-xl);
+    font-weight: var(--eji-fw-bold);
+    line-height: 1.3;
+    color: var(--eji-ink-900);
+}
+
+// ---------------------------------------------------------------------
+// KPI row
+// ---------------------------------------------------------------------
+.eji-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--eji-sp-3);
+}
+
+@include media-breakpoint-down(lg) {
+    .eji-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .eji-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.eji-kpi {
+    display: flex;
+    flex-direction: column;
+    gap: var(--eji-sp-1);
+    min-width: 0;
+    padding: var(--eji-sp-4);
+    background: var(--eji-surface);
+    border: 1px solid var(--eji-line);
+    border-radius: var(--eji-r-lg);
+    box-shadow: var(--eji-sh-sm);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color var(--eji-transition), box-shadow var(--eji-transition);
+
+    &:hover,
+    &:focus {
+        text-decoration: none;
+        color: inherit;
+        border-color: var(--eji-line-2);
+        box-shadow: var(--eji-sh-md);
+    }
+}
+
+.eji-kpi__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--eji-sp-2);
+}
+
+.eji-kpi__label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--eji-fs-xs);
+    font-weight: var(--eji-fw-semibold);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--eji-ink-500);
+}
+
+.eji-kpi__ico {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--eji-r-md);
+    background: var(--eji-primary-50);
+    color: var(--eji-primary-600);
+
+    .icon {
+        margin: 0;
+        width: 1rem;
+        height: 1rem;
+        font-size: 1rem;
+    }
+}
+
+.eji-kpi__value {
+    margin-top: var(--eji-sp-1);
+    font-size: var(--eji-fs-kpi);
+    font-weight: var(--eji-fw-bold);
+    line-height: 1.1;
+    color: var(--eji-ink-900);
+    font-variant-numeric: tabular-nums;
+}
+
+// Tone only tints the icon tile - the number itself always stays ink, so the
+// row reads as data rather than as a set of alerts.
+.eji-kpi--info .eji-kpi__ico {
+    background: var(--eji-accent-50);
+    color: var(--eji-accent-600);
+}
+
+.eji-kpi--success .eji-kpi__ico {
+    background: var(--eji-success-50);
+    color: var(--eji-success-600);
+}
+
+.eji-kpi--muted .eji-kpi__ico {
+    background: var(--eji-st-draft-bg);
+    color: var(--eji-st-draft-ink);
+}
+
+// ---------------------------------------------------------------------
+// Continue learning
+// ---------------------------------------------------------------------
+.eji-continue {
+    background: var(--eji-surface);
+    border: 1px solid var(--eji-line);
+    border-radius: var(--eji-r-lg);
+    box-shadow: var(--eji-sh-sm);
+    overflow: hidden;
+}
+
+.eji-continue__head {
+    padding: var(--eji-sp-4) var(--eji-sp-6);
+    border-bottom: 1px solid var(--eji-line);
+}
+
+.eji-continue__title {
+    margin: 0;
+    font-size: var(--eji-fs-md);
+    font-weight: var(--eji-fw-semibold);
+    color: var(--eji-ink-900);
+}
+
+.eji-continue__sub {
+    margin: 2px 0 0;
+    font-size: var(--eji-fs-sm);
+    color: var(--eji-ink-500);
+}
+
+.eji-continue__body {
+    display: flex;
+    align-items: center;
+    gap: var(--eji-sp-5);
+    padding: var(--eji-sp-5) var(--eji-sp-6);
+}
+
+.eji-continue__img {
+    flex: none;
+    width: 112px;
+    height: 72px;
+    border-radius: var(--eji-r-md);
+    background-color: var(--eji-bg-alt);
+    background-size: cover;
+    background-position: center;
+    border: 1px solid var(--eji-line);
+}
+
+.eji-continue__meta {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.eji-continue__shortname {
+    margin: 0;
+    font-size: var(--eji-fs-xs);
+    font-weight: var(--eji-fw-semibold);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--eji-ink-500);
+}
+
+.eji-continue__name {
+    margin: 2px 0 var(--eji-sp-3);
+    font-size: var(--eji-fs-md);
+    font-weight: var(--eji-fw-semibold);
+
+    a {
+        color: var(--eji-ink-900);
+
+        &:hover {
+            color: var(--eji-accent-600);
+            text-decoration: none;
+        }
+    }
+}
+
+.eji-continue__activities {
+    margin: var(--eji-sp-2) 0 0;
+    font-size: var(--eji-fs-xs);
+    color: var(--eji-ink-500);
+}
+
+.eji-continue__action {
+    flex: none;
+}
+
+@include media-breakpoint-down(md) {
+    .eji-continue__body {
+        flex-wrap: wrap;
+        padding: var(--eji-sp-4);
+        gap: var(--eji-sp-4);
+    }
+
+    .eji-continue__img {
+        width: 64px;
+        height: 48px;
+    }
+
+    .eji-continue__action {
+        width: 100%;
+
+        .btn {
+            width: 100%;
+        }
+    }
+}
+
+// ---------------------------------------------------------------------
+// Course cards (block_myoverview / core_course)
+// ---------------------------------------------------------------------
+.block_myoverview,
+.block_recentlyaccessedcourses {
+    .card-deck,
+    .card-grid {
+        gap: var(--eji-sp-4) 0;
+    }
+}
+
+.course-card,
+.card-grid .course-card {
+    width: 100%;
+    background: var(--eji-surface);
+    border: 1px solid var(--eji-line);
+    border-radius: var(--eji-r-lg);
+    box-shadow: var(--eji-sh-sm);
+    overflow: hidden;
+    transition: border-color var(--eji-transition), box-shadow var(--eji-transition);
+
+    &:hover {
+        border-color: var(--eji-line-2);
+        box-shadow: var(--eji-sh-md);
+    }
+
+    .card-img-top {
+        height: 128px;
+        background-size: cover;
+        background-position: center;
+        background-color: var(--eji-primary-50);
+        border-bottom: 1px solid var(--eji-line);
+    }
+
+    .card-body {
+        padding: var(--eji-sp-4) var(--eji-sp-4) var(--eji-sp-2);
+    }
+
+    .coursename {
+        display: inline-block;
+        font-size: var(--eji-fs-base);
+        font-weight: var(--eji-fw-semibold);
+        color: var(--eji-ink-900);
+        line-height: 1.4;
+
+        &:hover {
+            color: var(--eji-accent-600);
+            text-decoration: none;
+        }
+    }
+
+    .categoryname,
+    .text-muted {
+        font-size: var(--eji-fs-xs);
+        color: var(--eji-ink-500);
+    }
+
+    .card-footer {
+        background: transparent;
+        border-top: 0;
+        padding: 0 var(--eji-sp-4) var(--eji-sp-4);
+    }
+
+    // The progress rail inside a card sits tight under the metadata.
+    .progress {
+        margin-top: var(--eji-sp-1);
+    }
+
+    .progress-text {
+        font-size: var(--eji-fs-xs);
+        color: var(--eji-ink-600);
+    }
+}
+
+// List and summary views of the same block.
+.block_myoverview {
+    .list-group-item {
+        border-color: var(--eji-line);
+        padding: var(--eji-sp-3) var(--eji-sp-4);
+
+        &:hover {
+            background: var(--eji-row-hover);
+        }
+    }
+
+    // The All / In progress / Future filter row.
+    .dropdown-toggle,
+    [data-toggle="dropdown"] {
+        font-size: var(--eji-fs-sm);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Timeline block
+// ---------------------------------------------------------------------
+.block_timeline {
+    .list-group-item {
+        border-color: var(--eji-line);
+    }
+
+    .event-name-container {
+        font-size: var(--eji-fs-base);
+    }
+
+    .badge {
+        font-size: var(--eji-fs-xs);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Calendar block
+// ---------------------------------------------------------------------
+.block_calendar_month {
+    .calendartable {
+        font-size: var(--eji-fs-xs);
+
+        td,
+        th {
+            border-color: var(--eji-line);
+        }
+
+        .today {
+            background: var(--eji-accent-50);
+            border-color: var(--eji-accent-600);
+        }
+    }
+}
+
+// ---------------------------------------------------------------------
+// EJI course card
+//
+// Styles the theme's own core_course/coursecard override. The data is core's;
+// only the arrangement is ours.
+// ---------------------------------------------------------------------
+.eji-course-card {
+    display: flex;
+    flex-direction: column;
+
+    .eji-course-card__imglink {
+        display: block;
+    }
+
+    .card-body {
+        flex: 1 1 auto;
+        padding: var(--eji-sp-4);
+    }
+}
+
+.eji-course-card__shortname {
+    font-size: var(--eji-fs-xs);
+    font-weight: var(--eji-fw-semibold);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--eji-ink-500);
+    margin-bottom: var(--eji-sp-1);
+}
+
+.eji-course-card__name {
+    display: block;
+    font-size: var(--eji-fs-base);
+    font-weight: var(--eji-fw-semibold);
+    line-height: 1.4;
+    color: var(--eji-ink-900);
+
+    &:hover {
+        color: var(--eji-accent-600);
+        text-decoration: none;
+    }
+}
+
+.eji-course-card__category {
+    margin-top: var(--eji-sp-1);
+    font-size: var(--eji-fs-xs);
+    color: var(--eji-ink-500);
+}
+
+.eji-course-card__badges {
+    margin-top: var(--eji-sp-2);
+}
+
+// The footer holds core's progress bar and its action menu side by side.
+.eji-course-card__foot {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--eji-sp-2);
+    padding: 0 var(--eji-sp-4) var(--eji-sp-3);
+
+    .card-footer {
+        padding: 0;
+        background: transparent;
+        border: 0;
+    }
+
+    .menu {
+        margin-left: auto;
+    }
+}

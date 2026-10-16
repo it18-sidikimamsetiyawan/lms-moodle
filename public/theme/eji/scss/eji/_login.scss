@@ -1,0 +1,202 @@
+// =====================================================================
+// EJI ONE - login
+//
+// Boost's split-screen login layout is already the shape the brief asks for,
+// so the structure is inherited and only its surfaces change: an EJI primary
+// gradient on the left panel, the form on a white card on the right.
+//
+// Nothing here touches authentication. The form, the login token, identity
+// providers, guest access and the forgotten-password link are all core output.
+// =====================================================================
+
+body.pagelayout-login {
+    background: var(--eji-bg);
+
+    #page {
+        margin-top: 0;
+    }
+}
+
+// ---------------------------------------------------------------------
+// Left panel
+//
+// The default background is a flat EJI gradient rather than a photograph.
+//
+// Boost's extra-SCSS callback runs before this theme's (Moodle walks the
+// parent themes first), and it unconditionally injects a stock background
+// image plus an "AI-generated image" watermark in ::after. Both are undone
+// here rather than left to chance: the background is replaced by the gradient,
+// and the watermark's content is cleared. An uploaded loginbackgroundimage
+// still wins, because theme_eji_get_extra_scss() appends it after this file.
+// ---------------------------------------------------------------------
+body.pagelayout-login #page .login-layout-left {
+    position: relative;
+    background-color: var(--eji-primary-700);
+    background-image: linear-gradient(145deg, var(--eji-primary-800) 0%, var(--eji-primary-600) 55%, var(--eji-accent-700) 100%);
+    color: var(--eji-on-dark);
+    align-items: center;
+    justify-content: center;
+    padding: var(--eji-sp-10);
+
+    // Removes Boost's watermark - there is no stock photograph here to credit.
+    &::after {
+        content: none;
+    }
+}
+
+.eji-login__panel {
+    max-width: 28rem;
+    text-align: center;
+    color: var(--eji-on-dark);
+    // Boost tints this block and pushes it up with a 5rem bottom margin so it
+    // reads over a photo. On a flat gradient both are just noise.
+    background-color: transparent;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+.eji-login__brandname {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: var(--eji-fw-extra);
+    letter-spacing: .02em;
+    line-height: 1.15;
+    color: var(--eji-on-dark);
+}
+
+.eji-login__tagline {
+    margin: var(--eji-sp-4) 0 0;
+    font-size: var(--eji-fs-md);
+    font-weight: var(--eji-fw-medium);
+    color: var(--eji-primary-100);
+}
+
+.eji-login__instructions {
+    text-align: left;
+    color: var(--eji-primary-100);
+    font-size: var(--eji-fs-base);
+
+    a {
+        color: var(--eji-on-dark);
+        text-decoration: underline;
+    }
+}
+
+// ---------------------------------------------------------------------
+// Right panel - the form
+// ---------------------------------------------------------------------
+body.pagelayout-login #page .login-layout-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--eji-bg);
+}
+
+.login-layout-right-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: var(--eji-sp-8) var(--eji-sp-5);
+}
+
+.login-container {
+    width: 100%;
+    max-width: 25rem;
+}
+
+.loginform,
+#region-main .loginform {
+    background: var(--eji-surface);
+    border: 1px solid var(--eji-line);
+    border-radius: var(--eji-r-lg);
+    box-shadow: var(--eji-sh-sm);
+    padding: var(--eji-sp-6);
+}
+
+.login-wrapper {
+    .login-heading,
+    h1,
+    h2 {
+        font-size: var(--eji-fs-xl);
+        font-weight: var(--eji-fw-bold);
+        color: var(--eji-ink-900);
+        margin-bottom: var(--eji-sp-2);
+    }
+
+    .login-subheading {
+        color: var(--eji-ink-500);
+        font-size: var(--eji-fs-base);
+        margin-bottom: var(--eji-sp-5);
+    }
+
+    label {
+        font-size: var(--eji-fs-sm);
+        font-weight: var(--eji-fw-semibold);
+        color: var(--eji-ink-700);
+    }
+
+    .form-control {
+        min-height: 44px;
+    }
+
+    // The submit button spans the card, as in the reference.
+    #loginbtn,
+    .btn-primary {
+        width: 100%;
+        min-height: 44px;
+        font-size: var(--eji-fs-md);
+    }
+
+    .login-form-forgotpassword,
+    .forgetpass {
+        margin-top: var(--eji-sp-4);
+        font-size: var(--eji-fs-sm);
+    }
+
+    // Identity providers (OAuth2 / Keycloak when it is switched on later).
+    .login-identityproviders {
+        margin-top: var(--eji-sp-5);
+        padding-top: var(--eji-sp-5);
+        border-top: 1px solid var(--eji-line);
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+            margin-bottom: var(--eji-sp-2);
+        }
+    }
+
+    .login-divider {
+        border-color: var(--eji-line);
+    }
+}
+
+// Error and info notices above the form.
+body.pagelayout-login {
+    .alert {
+        border-radius: var(--eji-r-md);
+        font-size: var(--eji-fs-sm);
+    }
+
+    .login-info,
+    .login-instructions {
+        font-size: var(--eji-fs-sm);
+        color: var(--eji-ink-600);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Small screens
+//
+// Boost hides the left panel below lg. The brand is moved into the form card
+// instead so the page never loses its identity.
+// ---------------------------------------------------------------------
+@include media-breakpoint-down(lg) {
+    .login-layout-right-content {
+        padding: var(--eji-sp-6) var(--eji-sp-4);
+    }
+
+    .login-container {
+        max-width: 26rem;
+    }
+}

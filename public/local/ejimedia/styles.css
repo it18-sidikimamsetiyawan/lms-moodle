@@ -1,0 +1,186 @@
+/* Inline media players on the course page - local_ejimedia.
+ *
+ * Values come from the EJI ONE theme as CSS custom properties, with the literal
+ * fallback next to each one so the player still looks right under Boost or any
+ * other theme. */
+
+.local-ejimedia-player {
+    margin-top: var(--eji-sp-3, .75rem);
+    max-width: var(--ejimedia-maxwidth, 100%);
+}
+
+/* The media plugins wrap their output in .mediaplugin; the frame belongs on
+ * that element so it hugs the player rather than the surrounding column. */
+.local-ejimedia-player .mediaplugin,
+.path-mod-resource .resourcecontent .mediaplugin {
+    background: #000;
+    border: 1px solid var(--eji-line, #e2e8f0);
+    border-radius: var(--eji-r-lg, .75rem);
+    box-shadow: var(--eji-sh-sm, 0 1px 3px rgba(15, 23, 42, .06));
+    margin: 0;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* VideoJS emits an inline max-width of its own on this wrapper. Let it keep the
+ * width but stop it introducing a second frame. */
+.local-ejimedia-player .mediaplugin > div,
+.path-mod-resource .resourcecontent .mediaplugin > div {
+    margin: 0;
+}
+
+/* Never let a player push the activity card wider than the content area. */
+.local-ejimedia-player video,
+.local-ejimedia-player .video-js,
+.path-mod-resource .resourcecontent video,
+.path-mod-resource .resourcecontent .video-js {
+    border-radius: var(--eji-r-lg, .75rem);
+    display: block;
+    height: auto;
+    max-width: 100%;
+    width: 100%;
+}
+
+/* VideoJS in fluid mode sizes itself with padding-top, so height must stay
+ * automatic - overriding it would collapse the player. */
+.local-ejimedia-player .video-js.vjs-fluid,
+.path-mod-resource .resourcecontent .video-js.vjs-fluid {
+    height: 0;
+}
+
+/* Match the control bar and progress bar to the theme accent. */
+.local-ejimedia-player .video-js .vjs-play-progress,
+.local-ejimedia-player .video-js .vjs-volume-level,
+.path-mod-resource .resourcecontent .vjs-play-progress,
+.path-mod-resource .resourcecontent .vjs-volume-level {
+    background-color: var(--eji-primary-600, #2563eb);
+}
+
+.local-ejimedia-player .video-js .vjs-big-play-button,
+.path-mod-resource .resourcecontent .vjs-big-play-button {
+    background-color: var(--eji-scrim, rgba(15, 23, 42, .55));
+    border: 0;
+    border-radius: var(--eji-r-full, 999px);
+    height: 3.5rem;
+    line-height: 3.5rem;
+    margin-left: -1.75rem;
+    margin-top: -1.75rem;
+    width: 3.5rem;
+}
+
+.local-ejimedia-player .video-js:hover .vjs-big-play-button,
+.local-ejimedia-player .video-js .vjs-big-play-button:focus,
+.path-mod-resource .resourcecontent .video-js:hover .vjs-big-play-button,
+.path-mod-resource .resourcecontent .vjs-big-play-button:focus {
+    background-color: var(--eji-primary-600, #2563eb);
+}
+
+/* The control bar sits on top of the picture, so it needs a dark scrim of its
+ * own - VideoJS draws its icons and times in white. The theme ink colour is the
+ * literal fallback because --eji-ink-900 cannot be given an alpha channel here. */
+.local-ejimedia-player .video-js .vjs-control-bar,
+.path-mod-resource .resourcecontent .vjs-control-bar {
+    background: linear-gradient(to top, rgba(15, 23, 42, .92), rgba(15, 23, 42, .55));
+    color: var(--eji-on-dark, #fff);
+}
+
+/* VideoJS ships with the elapsed/total pair hidden and only the remaining time
+ * showing. Swap that around so the duration is readable at a glance. */
+.local-ejimedia-player .video-js .vjs-current-time,
+.local-ejimedia-player .video-js .vjs-time-divider,
+.local-ejimedia-player .video-js .vjs-duration,
+.path-mod-resource .resourcecontent .vjs-current-time,
+.path-mod-resource .resourcecontent .vjs-time-divider,
+.path-mod-resource .resourcecontent .vjs-duration {
+    display: flex;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.local-ejimedia-player .video-js .vjs-current-time,
+.path-mod-resource .resourcecontent .vjs-current-time {
+    padding-left: var(--eji-sp-2, .5rem);
+}
+
+.local-ejimedia-player .video-js .vjs-duration,
+.path-mod-resource .resourcecontent .vjs-duration {
+    padding-right: var(--eji-sp-2, .5rem);
+}
+
+.local-ejimedia-player .video-js .vjs-time-divider,
+.path-mod-resource .resourcecontent .vjs-time-divider {
+    min-width: 1ch;
+    text-align: center;
+}
+
+.local-ejimedia-player .video-js .vjs-remaining-time,
+.path-mod-resource .resourcecontent .vjs-remaining-time {
+    display: none;
+}
+
+/* The fallback link the media manager adds for browsers that cannot play the
+ * file - only ever visible when the player itself does not render. */
+.local-ejimedia-player .mediafallbacklink {
+    color: var(--eji-primary-600, #2563eb);
+    display: inline-block;
+    font-size: var(--eji-fs-sm, .875rem);
+    padding: var(--eji-sp-3, .75rem);
+}
+
+@media (max-width: 767.98px) {
+    .local-ejimedia-player {
+        max-width: 100%;
+    }
+
+    /* Beat the inline max-width VideoJS writes for large screens. */
+    .local-ejimedia-player .mediaplugin > div {
+        max-width: 100% !important;
+    }
+
+    .local-ejimedia-player .video-js .vjs-big-play-button {
+        height: 2.75rem;
+        line-height: 2.75rem;
+        margin-left: -1.375rem;
+        margin-top: -1.375rem;
+        width: 2.75rem;
+    }
+}
+
+/* mod/resource with display = Embed renders the same media markup on its own page.
+ * The rules above already frame and theme it; this centres the box and keeps it
+ * from stretching across a wide screen, matching the course page player. */
+.path-mod-resource .resourcecontent {
+    margin: 0 auto;
+    max-width: 720px;
+    width: 100%;
+}
+
+/* VideoJS writes an inline max-width from the site-wide default media size, which
+ * is narrower than this box and would leave black gutters down both sides. The
+ * box above is what should decide the width here. */
+.path-mod-resource .resourcecontent .mediaplugin > div {
+    margin: 0 auto;
+    max-width: 100% !important;
+}
+
+/* mod/resource with display = Embed renders an image as
+ * <div class="resourcecontent resourceimg"><img class="resourceimage"></div>.
+ * Give it the same frame as the video box - a light surface behind it rather
+ * than black, so transparent PNGs read correctly. */
+.path-mod-resource .resourceimg {
+    background: var(--eji-surface, #fff);
+    border: 1px solid var(--eji-line, #e2e8f0);
+    border-radius: var(--eji-r-lg, .75rem);
+    box-shadow: var(--eji-sh-sm, 0 1px 3px rgba(15, 23, 42, .06));
+    overflow: hidden;
+    padding: 0;
+}
+
+.path-mod-resource .resourceimg .resourceimage {
+    display: block;
+    height: auto;
+    /* max-width rather than width, so a picture smaller than the box is shown
+     * at its own size instead of being blown up. */
+    margin: 0 auto;
+    max-width: 100%;
+}

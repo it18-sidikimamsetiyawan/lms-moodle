@@ -1,0 +1,101 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_eji/eji-dashboard-header
+
+    Welcome line, KPI row and "Continue learning" card, shown above the
+    dashboard's blocks.
+
+    Every figure comes from theme_eji\output\dashboard_summary, which reads
+    Moodle's enrolment and completion APIs for the logged-in user. Nothing on
+    this page is hardcoded; when Moodle cannot know a value (a course with
+    completion tracking switched off) the corresponding line is simply not
+    rendered.
+
+    Context variables required for this template:
+    * welcome - Greeting line.
+    * kpis - Array of {label, value, icon, tone, url}.
+    * continue - false, or {fullname, shortname, viewurl, hasprogress, progress, activitysummary, image}.
+
+    Example context (json):
+    {
+        "welcome": "Welcome back, Sidik",
+        "hascourses": true,
+        "kpis": [
+            {"label": "My courses", "value": 4, "icon": "", "tone": "default", "url": "/my/courses.php"},
+            {"label": "In progress", "value": 2, "icon": "", "tone": "info", "url": "/my/courses.php"}
+        ],
+        "continue": {
+            "fullname": "Leadership Fundamentals",
+            "shortname": "LEAD-101",
+            "viewurl": "/course/view.php?id=2",
+            "hasprogress": true,
+            "progress": 75,
+            "activitysummary": "8 of 10 activities completed",
+            "image": ""
+        }
+    }
+}}
+<section class="eji-dash" aria-labelledby="eji-dash-welcome">
+    <h1 class="eji-dash__welcome" id="eji-dash-welcome">{{welcome}}</h1>
+
+    <div class="eji-kpi-grid">
+        {{#kpis}}
+            <a class="eji-kpi eji-kpi--{{tone}}" href="{{{url}}}">
+                <span class="eji-kpi__head">
+                    <span class="eji-kpi__label">{{label}}</span>
+                    <span class="eji-kpi__ico" aria-hidden="true">{{{icon}}}</span>
+                </span>
+                <span class="eji-kpi__value">{{value}}</span>
+            </a>
+        {{/kpis}}
+    </div>
+
+    {{#continue}}
+        <div class="eji-continue">
+            <div class="eji-continue__head">
+                <h3 class="eji-continue__title">{{#str}}continuelearning, theme_eji{{/str}}</h3>
+                <p class="eji-continue__sub">{{#str}}continuelearningdesc, theme_eji{{/str}}</p>
+            </div>
+            <div class="eji-continue__body">
+                {{#image}}
+                    <span class="eji-continue__img" style="background-image:url('{{{image}}}');" aria-hidden="true"></span>
+                {{/image}}
+                <div class="eji-continue__meta">
+                    <p class="eji-continue__shortname">{{shortname}}</p>
+                    <p class="eji-continue__name">
+                        <a href="{{{viewurl}}}">{{fullname}}</a>
+                    </p>
+                    {{#hasprogress}}
+                        <div class="eji-progress-row">
+                            <div class="progress" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" aria-label="{{#str}}courseprogress, theme_eji{{/str}}">
+                                <div class="progress-bar" style="width: {{progress}}%"></div>
+                            </div>
+                            <span class="eji-progress-value">{{progress}}%</span>
+                        </div>
+                    {{/hasprogress}}
+                    {{#activitysummary}}
+                        <p class="eji-continue__activities">{{activitysummary}}</p>
+                    {{/activitysummary}}
+                </div>
+                <div class="eji-continue__action">
+                    <a class="btn btn-primary" href="{{{viewurl}}}">{{#str}}continue, theme_eji{{/str}}</a>
+                </div>
+            </div>
+        </div>
+    {{/continue}}
+</section>

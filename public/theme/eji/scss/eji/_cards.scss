@@ -1,0 +1,252 @@
+// =====================================================================
+// EJI ONE - surfaces
+//
+// The card is the single most repeated element in the EJI reference: white
+// surface, 1px line border, 12px radius, a very soft shadow. Most of that
+// already arrives from the $card-* tokens set in _tokens.scss; what is left
+// here is the Moodle-specific surfaces that are not Bootstrap cards - the main
+// content region, blocks, and the boxes Moodle draws by hand.
+// =====================================================================
+
+// ---------------------------------------------------------------------
+// Main content region
+//
+// Boost paints .main-inner white and leaves #region-main transparent. EJI
+// inverts that: the page background stays --eji-bg and the content sits on its
+// own card, which is what makes a Moodle page read like the reference.
+// ---------------------------------------------------------------------
+#region-main {
+    background: var(--eji-surface);
+    border: 1px solid var(--eji-line);
+    border-radius: var(--eji-r-lg);
+    box-shadow: var(--eji-sh-sm);
+    padding: var(--eji-sp-6);
+}
+
+// Pages that render their own full-width furniture look wrong inside a card,
+// so they opt out. These are the layouts where Moodle already provides the
+// surface, or where the content is a canvas rather than a document.
+.pagelayout-embedded,
+.pagelayout-maintenance,
+.pagelayout-print,
+.pagelayout-popup,
+.pagelayout-secure {
+    #region-main {
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 0;
+    }
+}
+
+// Pages that are themselves a grid of cards - the dashboard's blocks, My
+// courses, and the profile's category cards. A card inside a card reads as a
+// mistake, so the region goes flat and lets its children be the surfaces.
+// The course page is a stack of section cards, and the category page a stack
+// of course boxes - both already provide their own surfaces.
+.pagelayout-mydashboard,
+.pagelayout-mycourses,
+.pagelayout-course,
+.pagelayout-coursecategory,
+#page-user-profile,
+#page-user-preferences {
+    #region-main {
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+    }
+}
+
+// On the dashboard, core's page heading says only "Dashboard" - which the
+// topbar and the document title already say. The welcome line replaces it as
+// the page's h1, so the duplicate heading is removed from the accessibility
+// tree as well as from view.
+#page-my-index #page-header {
+    display: none;
+}
+
+@include media-breakpoint-down(md) {
+    #region-main {
+        padding: var(--eji-sp-4);
+        border-radius: var(--eji-r-md);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Bootstrap cards
+// ---------------------------------------------------------------------
+.card {
+    box-shadow: var(--eji-sh-sm);
+}
+
+.card-header,
+.card-footer {
+    border-color: var(--eji-line);
+}
+
+.card-header {
+    font-weight: var(--eji-fw-semibold);
+    color: var(--eji-ink-900);
+}
+
+.card-footer {
+    background: var(--eji-bg-alt);
+}
+
+.card-title {
+    font-size: var(--eji-fs-md);
+    font-weight: var(--eji-fw-semibold);
+    color: var(--eji-ink-900);
+}
+
+// ---------------------------------------------------------------------
+// Blocks
+//
+// Every Moodle block becomes an EJI card. Block content is rendered by the
+// block plugins themselves and is untouched.
+// ---------------------------------------------------------------------
+.block {
+    background: var(--eji-surface);
+    border: 1px solid var(--eji-line);
+    border-radius: var(--eji-r-lg);
+    box-shadow: var(--eji-sh-sm);
+    margin-bottom: var(--eji-sp-5);
+
+    .card-body {
+        padding: var(--eji-sp-5) var(--eji-sp-6);
+    }
+
+    .card-title,
+    h5.card-title {
+        margin: 0 0 var(--eji-sp-4);
+        font-size: var(--eji-fs-md);
+        font-weight: var(--eji-fw-semibold);
+        color: var(--eji-ink-900);
+    }
+
+    .block-cards .course-card,
+    .list-group-item {
+        border-color: var(--eji-line);
+    }
+}
+
+// Inside the right-hand drawer the blocks are already on a panel, so drop the
+// doubled border and let them read as a list.
+.drawer-right .block {
+    border: 0;
+    box-shadow: none;
+    border-bottom: 1px solid var(--eji-line);
+    border-radius: 0;
+    margin-bottom: 0;
+}
+
+// ---------------------------------------------------------------------
+// Boxes Moodle draws by hand
+//
+// generalbox, box, informationbox and friends appear all over core - activity
+// intros, mod pages, report summaries. They get the subtle surface rather than
+// the full card so they read as secondary to the region they sit in.
+// ---------------------------------------------------------------------
+.generalbox,
+.box.generalbox,
+.informationbox,
+.activity-description,
+#intro,
+.mod_introbox {
+    background: var(--eji-bg-alt);
+    border: 1px solid var(--eji-line);
+    border-radius: var(--eji-r-md);
+    padding: var(--eji-sp-4) var(--eji-sp-5);
+}
+
+// ---------------------------------------------------------------------
+// Alerts and notifications
+// ---------------------------------------------------------------------
+.alert {
+    border-width: 1px;
+    font-size: var(--eji-fs-base);
+
+    .alert-link {
+        font-weight: var(--eji-fw-semibold);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Empty states
+//
+// Moodle's zero states are plain centred text. The reference gives them an
+// icon tile, a title and a description, so the shape is matched here without
+// changing any of the markup core emits.
+// ---------------------------------------------------------------------
+.empty-placeholder-image-lg,
+.zero-state-image {
+    max-width: 10rem;
+    opacity: .85;
+}
+
+[data-region="empty-message"],
+.zero-state {
+    text-align: center;
+    color: var(--eji-ink-500);
+    padding: var(--eji-sp-8) var(--eji-sp-6);
+    font-size: var(--eji-fs-sm);
+}
+
+// ---------------------------------------------------------------------
+// Modals and popovers
+// ---------------------------------------------------------------------
+.modal-content {
+    border: 1px solid var(--eji-line);
+}
+
+.modal-header {
+    border-bottom-color: var(--eji-line);
+
+    .modal-title {
+        font-size: var(--eji-fs-md);
+        font-weight: var(--eji-fw-semibold);
+        color: var(--eji-ink-900);
+    }
+}
+
+.modal-footer {
+    border-top-color: var(--eji-line);
+    background: var(--eji-bg-alt);
+}
+
+.popover {
+    box-shadow: var(--eji-sh-lg);
+}
+
+// Message and notification popovers in the topbar.
+.popover-region {
+    .popover-region-container {
+        border: 1px solid var(--eji-line);
+        border-radius: var(--eji-r-lg);
+        box-shadow: var(--eji-sh-lg);
+    }
+
+    .popover-region-header-container {
+        border-bottom: 1px solid var(--eji-line);
+        font-weight: var(--eji-fw-semibold);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Dropdowns
+// ---------------------------------------------------------------------
+.dropdown-menu {
+    box-shadow: var(--eji-sh-lg);
+    padding: var(--eji-sp-1);
+
+    .dropdown-item {
+        border-radius: var(--eji-r-sm);
+        font-size: var(--eji-fs-base);
+    }
+
+    .dropdown-divider {
+        border-top-color: var(--eji-line);
+    }
+}

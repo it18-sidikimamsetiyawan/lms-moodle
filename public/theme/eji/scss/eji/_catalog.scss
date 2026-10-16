@@ -1,0 +1,773 @@
+// =====================================================================
+// EJI ONE - course catalogue (/course/index.php and its search results)
+//
+// Makes the catalogue read as a continuation of the dashboard: the same
+// white cards, 12px radius and soft shadow; the same tinted icon tile the KPI
+// row uses; and course cards the same shape as the dashboard's (image on top,
+// then name and metadata).
+//
+// Markup comes from theme_eji\output\core\course_renderer, which keeps every
+// hook the category expander needs. Two class names used below come from core
+// and are also its behaviour switches, so they are only ever read here:
+//   .collapsed   - a category (or a course row) whose content is hidden
+//   .with_children - a category the expander can open
+// =====================================================================
+
+$eji-fa: 'Font Awesome 6 Free';
+
+// ---------------------------------------------------------------------
+// Toolbar: category picker + course search
+//
+// Core's tertiary navigation. It sits where the dashboard's filter row sits
+// and gets the same 40px controls.
+// ---------------------------------------------------------------------
+.eji-catalog {
+    .tertiary-navigation {
+        padding: 0;
+        margin: 0 0 var(--eji-sp-5);
+
+        > .d-flex {
+            flex-wrap: wrap;
+            gap: var(--eji-sp-3);
+        }
+
+        .navitem {
+            margin: 0;
+            min-width: 0;
+        }
+
+        .navitem:first-child {
+            flex: 0 1 18rem;
+        }
+
+        .navitem:last-child {
+            flex: 1 1 16rem;
+        }
+
+        .form-select {
+            height: 40px;
+            background-color: var(--eji-surface);
+            border-color: var(--eji-line-2);
+            border-radius: var(--eji-r-md);
+            font-size: var(--eji-fs-sm);
+            font-weight: var(--eji-fw-medium);
+        }
+    }
+
+    // The category's own description, when it has one.
+    > .generalbox.info {
+        margin: 0 0 var(--eji-sp-5);
+        padding: var(--eji-sp-4) var(--eji-sp-5);
+        background: var(--eji-surface);
+        border: 1px solid var(--eji-line);
+        border-radius: var(--eji-r-lg);
+        box-shadow: var(--eji-sh-sm);
+        color: var(--eji-ink-600);
+    }
+}
+
+// Shared by the toolbar and the search results page.
+.eji-catalog .simplesearchform,
+#page-course-search .simplesearchform {
+    width: 100%;
+
+    form,
+    .input-group {
+        width: 100%;
+    }
+
+    .form-control {
+        height: 40px;
+        background: var(--eji-surface);
+        border-color: var(--eji-line-2);
+        border-radius: var(--eji-r-md) 0 0 var(--eji-r-md);
+        font-size: var(--eji-fs-sm);
+    }
+
+    .search-icon {
+        width: 44px;
+        min-height: 40px;
+        border-radius: 0 var(--eji-r-md) var(--eji-r-md) 0;
+    }
+}
+
+#page-course-search .simplesearchform {
+    max-width: 36rem;
+    margin-bottom: var(--eji-sp-5);
+}
+
+// ---------------------------------------------------------------------
+// Section head: title + count on the left, "Expand all" on the right
+//
+// The tree element is display: contents so that its "Expand all" link can
+// share a row with the heading the renderer places before it, without
+// moving the link out of the tree the expander looks it up in.
+// ---------------------------------------------------------------------
+.eji-catalog__section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--eji-sp-3) var(--eji-sp-4);
+
+    > .course_category_tree {
+        display: contents;
+
+        // Clearfix would otherwise become an empty grid cell.
+        &::after {
+            display: none;
+        }
+
+        > .collapsible-actions {
+            grid-column: 2;
+            grid-row: 1;
+            margin: 0;
+        }
+
+        > .content {
+            grid-column: 1 / -1;
+            min-width: 0;
+        }
+    }
+}
+
+.eji-catalog__head {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--eji-sp-2);
+    min-width: 0;
+}
+
+.eji-catalog__title {
+    margin: 0;
+    font-size: var(--eji-fs-md);
+    font-weight: var(--eji-fw-semibold);
+    color: var(--eji-ink-900);
+}
+
+.eji-catalog__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 22px;
+    padding: 0 var(--eji-sp-2);
+    border-radius: var(--eji-r-full);
+    background: var(--eji-primary-50);
+    color: var(--eji-primary-600);
+    font-size: var(--eji-fs-xs);
+    font-weight: var(--eji-fw-semibold);
+    font-variant-numeric: tabular-nums;
+}
+
+.eji-catalog .collapseexpand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--eji-sp-2);
+    padding: 6px var(--eji-sp-3);
+    border-radius: var(--eji-r-md);
+    font-size: var(--eji-fs-sm);
+    font-weight: var(--eji-fw-medium);
+    color: var(--eji-accent-600);
+    white-space: nowrap;
+
+    &::before {
+        content: "\f103"; // angles-down
+        font-family: $eji-fa;
+        font-weight: 900;
+        font-size: .75em;
+    }
+
+    &.collapse-all::before {
+        content: "\f102"; // angles-up
+    }
+
+    &:hover,
+    &:focus {
+        background: var(--eji-accent-50);
+        color: var(--eji-accent-700);
+        text-decoration: none;
+    }
+}
+
+// ---------------------------------------------------------------------
+// Categories
+//
+// Top level: one card per category, stacked. Nested categories and course
+// rows opened inside a card become rows of that card.
+// ---------------------------------------------------------------------
+.eji-catalog .course_category_tree {
+    .subcategories {
+        display: flex;
+        flex-direction: column;
+        gap: var(--eji-sp-3);
+    }
+
+    // Core draws its chevron as a background image (on .with_children and
+    // .with_children.collapsed) and indents the content; both are replaced
+    // below.
+    .category.with_children > .info > .categoryname,
+    .category.with_children.collapsed > .info > .categoryname {
+        background-image: none;
+    }
+
+    .category > .content {
+        padding-left: 0;
+    }
+
+    .paging {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: var(--eji-sp-3) 0 0;
+    }
+}
+
+.eji-cat[data-depth="1"] {
+    background: var(--eji-surface);
+    border: 1px solid var(--eji-line);
+    border-radius: var(--eji-r-lg);
+    box-shadow: var(--eji-sh-sm);
+    overflow: hidden;
+    transition: border-color var(--eji-transition), box-shadow var(--eji-transition);
+
+    &:hover {
+        border-color: var(--eji-line-2);
+        box-shadow: var(--eji-sh-md);
+    }
+}
+
+.eji-catalog .course_category_tree .eji-cat > .info > .categoryname {
+    display: flex;
+    align-items: center;
+    gap: var(--eji-sp-3);
+    margin: 0;
+    padding: var(--eji-sp-4) var(--eji-sp-5);
+    font-size: var(--eji-fs-base);
+    font-weight: var(--eji-fw-regular);
+    line-height: 1.4;
+    border-radius: 0;
+}
+
+.eji-cat.with_children > .info > .categoryname {
+    cursor: pointer;
+
+    // Chevron on the right; points right when collapsed, down when open.
+    &::after {
+        content: "\f078"; // chevron-down
+        flex: none;
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        border-radius: var(--eji-r-md);
+        font-family: $eji-fa;
+        font-weight: 900;
+        font-size: .75rem;
+        color: var(--eji-ink-500);
+        transition: transform var(--eji-transition), background var(--eji-transition);
+    }
+
+    &:hover::after {
+        background: var(--eji-bg-alt);
+        color: var(--eji-ink-800);
+    }
+}
+
+.eji-cat.with_children.collapsed > .info > .categoryname::after {
+    transform: rotate(-90deg);
+}
+
+.eji-cat__icon {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--eji-r-md);
+    background: var(--eji-primary-50);
+    color: var(--eji-primary-600);
+
+    .icon {
+        margin: 0;
+        width: 1rem;
+        height: 1rem;
+        font-size: 1rem;
+    }
+}
+
+.eji-cat__text {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.eji-cat__name {
+    font-size: var(--eji-fs-md);
+    font-weight: var(--eji-fw-semibold);
+    color: var(--eji-ink-900);
+    overflow-wrap: anywhere;
+
+    &:hover,
+    &:focus {
+        color: var(--eji-accent-600);
+        text-decoration: none;
+    }
+}
+
+.eji-cat__meta {
+    margin-top: 2px;
+    font-size: var(--eji-fs-xs);
+    color: var(--eji-ink-500);
+}
+
+.dimmed_category > .info .eji-cat__name {
+    color: var(--eji-ink-450);
+}
+
+// Opened card: its content is a list of rows under a divider.
+.eji-cat.with_children:not(.collapsed) > .content {
+    border-top: 1px solid var(--eji-line);
+}
+
+.eji-cat .eji-cat {
+    .categoryname {
+        padding: var(--eji-sp-3) var(--eji-sp-5);
+    }
+
+    .eji-cat__icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .eji-cat__name {
+        font-size: var(--eji-fs-base);
+    }
+}
+
+.eji-cat .subcategories {
+    gap: 0;
+
+    > .eji-cat {
+        border-bottom: 1px solid var(--eji-line);
+    }
+}
+
+// Deeper levels indent under their parent's name.
+.eji-cat .eji-cat > .content {
+    padding-left: var(--eji-sp-6);
+    background: var(--eji-bg-alt);
+}
+
+// ---------------------------------------------------------------------
+// Course rows
+//
+// Core's compact form of a course, used inside an opened category and on a
+// category with more courses than fit as cards. Selected by what it is not
+// (a card) rather than by .collapsed, because the (i) button removes
+// .collapsed when it opens the course summary in place.
+// ---------------------------------------------------------------------
+.eji-catalog .coursebox:not(.eji-coursecard) {
+    margin: 0;
+    padding: var(--eji-sp-3) var(--eji-sp-5);
+    background: var(--eji-surface);
+    border: 0;
+    border-bottom: 1px solid var(--eji-line);
+    border-radius: 0;
+    box-shadow: none;
+    transition: background var(--eji-transition);
+
+    &:last-child {
+        border-bottom: 0;
+    }
+
+    &:hover {
+        background: var(--eji-row-hover);
+    }
+
+    > .info {
+        display: flex;
+        align-items: center;
+        gap: var(--eji-sp-3);
+
+        &::before {
+            content: "\f19d"; // graduation-cap
+            flex: none;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--eji-r-md);
+            background: var(--eji-accent-50);
+            color: var(--eji-accent-600);
+            font-family: $eji-fa;
+            font-weight: 900;
+            font-size: .8125rem;
+        }
+    }
+
+    .coursename {
+        flex: 1 1 auto;
+        min-width: 0;
+        margin: 0;
+        font-size: var(--eji-fs-base);
+        font-weight: var(--eji-fw-medium);
+        overflow-wrap: anywhere;
+
+        a {
+            color: var(--eji-ink-800);
+
+            &:hover {
+                color: var(--eji-accent-600);
+                text-decoration: none;
+            }
+        }
+    }
+
+    .moreinfo a {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--eji-r-md);
+        color: var(--eji-ink-500);
+
+        &:hover {
+            background: var(--eji-bg-alt);
+            color: var(--eji-ink-800);
+        }
+
+        .icon {
+            margin: 0;
+        }
+    }
+
+    // The summary the (i) button opens, aligned with the course name.
+    > .content {
+        padding: var(--eji-sp-2) 0 var(--eji-sp-1) 44px;
+        font-size: var(--eji-fs-sm);
+        color: var(--eji-ink-600);
+    }
+}
+
+// A category page whose courses are all rows: put the rows in one card.
+.eji-catalog__section .courses:has(> .coursebox:not(.eji-coursecard)) {
+    background: var(--eji-surface);
+    border: 1px solid var(--eji-line);
+    border-radius: var(--eji-r-lg);
+    box-shadow: var(--eji-sh-sm);
+    overflow: hidden;
+}
+
+.eji-cat .courses:has(> .coursebox:not(.eji-coursecard)) {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+// ---------------------------------------------------------------------
+// Course cards
+//
+// Same card as the dashboard's course overview: 128px image, then shortname,
+// name and metadata, with the action anchored to the bottom so a row of cards
+// lines up whatever the summary length.
+// ---------------------------------------------------------------------
+.eji-catalog .courses:has(> .eji-coursecard),
+.course-search-result:has(> .eji-coursecard) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+    gap: var(--eji-sp-4);
+}
+
+.courses .coursebox.eji-coursecard {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    background: var(--eji-surface);
+    border: 1px solid var(--eji-line);
+    border-radius: var(--eji-r-lg);
+    box-shadow: var(--eji-sh-sm);
+    overflow: hidden;
+    transition: border-color var(--eji-transition), box-shadow var(--eji-transition);
+
+    &:hover {
+        border-color: var(--eji-line-2);
+        box-shadow: var(--eji-sh-md);
+    }
+
+    &::after {
+        display: none;
+    }
+
+    > .eji-coursecard__body > .info {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--eji-sp-2);
+    }
+
+    .coursename {
+        flex: 1 1 auto;
+        min-width: 0;
+        margin: 0;
+        font-size: var(--eji-fs-base);
+        font-weight: var(--eji-fw-semibold);
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+
+        a {
+            color: var(--eji-ink-900);
+
+            &:hover {
+                color: var(--eji-accent-600);
+                text-decoration: none;
+            }
+
+            &.dimmed {
+                color: var(--eji-ink-450);
+            }
+        }
+    }
+
+    .moreinfo:empty {
+        display: none;
+    }
+
+    .enrolmenticons {
+        flex: none;
+        color: var(--eji-ink-400);
+
+        .icon {
+            margin: 0 0 0 var(--eji-sp-1);
+        }
+    }
+
+    // Metadata under the name. Core gives each of these a 15px margin.
+    .content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--eji-sp-2);
+
+        .summary,
+        .teachers,
+        .coursecat,
+        .coursefile,
+        .customfields-container {
+            margin: 0;
+            padding: 0;
+        }
+
+        .teachers,
+        .coursecat,
+        .customfields-container {
+            font-size: var(--eji-fs-xs);
+            color: var(--eji-ink-500);
+
+            .fw-bold,
+            .customfieldname {
+                font-weight: var(--eji-fw-semibold);
+                color: var(--eji-ink-600);
+            }
+
+            a {
+                color: var(--eji-ink-700);
+            }
+        }
+    }
+}
+
+.eji-coursecard__media {
+    display: block;
+    flex: none;
+    height: 128px;
+    background-color: var(--eji-primary-50);
+    background-size: cover;
+    background-position: center;
+    border-bottom: 1px solid var(--eji-line);
+}
+
+.eji-coursecard__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--eji-sp-2);
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: var(--eji-sp-4) var(--eji-sp-4) var(--eji-sp-3);
+}
+
+// The summary is shown as a three-line excerpt. Its HTML is left as core
+// formatted it (search highlighting included); block elements are simply
+// laid inline so the clamp can count lines, and media is left for the course
+// page itself.
+#region-main .eji-coursecard .summary .no-overflow {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    font-size: var(--eji-fs-sm);
+    line-height: 1.55;
+    color: var(--eji-ink-600);
+
+    p,
+    h1, h2, h3, h4, h5, h6,
+    ul, ol, li, dl, dt, dd,
+    div, blockquote, pre, figure {
+        display: inline;
+        margin: 0;
+        padding: 0;
+        font-size: inherit;
+        line-height: inherit;
+        color: inherit;
+    }
+
+    p, h1, h2, h3, h4, h5, h6, li, dd, div, blockquote {
+        &::after {
+            content: " ";
+        }
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: var(--eji-fw-semibold);
+        color: var(--eji-ink-700);
+    }
+
+    img,
+    video,
+    audio,
+    iframe,
+    table,
+    hr,
+    .mediaplugin {
+        display: none;
+    }
+}
+
+.eji-coursecard__foot {
+    padding: 0 var(--eji-sp-4) var(--eji-sp-4);
+}
+
+.eji-coursecard__action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--eji-sp-1);
+    font-size: var(--eji-fs-sm);
+    font-weight: var(--eji-fw-semibold);
+    color: var(--eji-accent-600);
+
+    .icon {
+        margin: 0;
+        width: .625rem;
+        height: .625rem;
+        font-size: .625rem;
+        transition: transform var(--eji-transition);
+    }
+
+    &:hover,
+    &:focus {
+        color: var(--eji-accent-700);
+        text-decoration: none;
+
+        .icon {
+            transform: translateX(2px);
+        }
+    }
+}
+
+// Search results heading ("Search results: 2").
+#page-course-search #region-main h2 {
+    margin: 0 0 var(--eji-sp-4);
+    font-size: var(--eji-fs-md);
+    font-weight: var(--eji-fw-semibold);
+    color: var(--eji-ink-900);
+}
+
+.course-search-result {
+    margin-top: 0;
+}
+
+// ---------------------------------------------------------------------
+// Empty state - same shape as the rest of the theme's zero states
+// ---------------------------------------------------------------------
+.eji-catalog-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--eji-sp-2);
+    padding: var(--eji-sp-10) var(--eji-sp-6);
+    text-align: center;
+    background: var(--eji-surface);
+    border: 1px solid var(--eji-line);
+    border-radius: var(--eji-r-lg);
+    box-shadow: var(--eji-sh-sm);
+
+    .btn {
+        margin-top: var(--eji-sp-3);
+    }
+}
+
+.eji-catalog-empty__icon {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--eji-sp-2);
+    border-radius: var(--eji-r-lg);
+    background: var(--eji-primary-50);
+    color: var(--eji-primary-600);
+
+    .icon {
+        margin: 0;
+        width: 1.25rem;
+        height: 1.25rem;
+        font-size: 1.25rem;
+    }
+}
+
+.eji-catalog-empty__title {
+    margin: 0;
+    font-size: var(--eji-fs-md);
+    font-weight: var(--eji-fw-semibold);
+    color: var(--eji-ink-900);
+}
+
+.eji-catalog-empty__desc {
+    margin: 0;
+    max-width: 28rem;
+    font-size: var(--eji-fs-sm);
+    color: var(--eji-ink-500);
+}
+
+// ---------------------------------------------------------------------
+// Small screens
+// ---------------------------------------------------------------------
+@include media-breakpoint-down(sm) {
+    .eji-catalog .tertiary-navigation .navitem:first-child,
+    .eji-catalog .tertiary-navigation .navitem:last-child {
+        flex: 1 1 100%;
+    }
+
+    .eji-catalog .course_category_tree .eji-cat > .info > .categoryname {
+        padding: var(--eji-sp-3) var(--eji-sp-4);
+    }
+
+    .eji-cat .eji-cat > .content {
+        padding-left: var(--eji-sp-4);
+    }
+
+    .eji-catalog .coursebox:not(.eji-coursecard) {
+        padding: var(--eji-sp-3) var(--eji-sp-4);
+    }
+
+    .eji-catalog-empty {
+        padding: var(--eji-sp-8) var(--eji-sp-4);
+    }
+}

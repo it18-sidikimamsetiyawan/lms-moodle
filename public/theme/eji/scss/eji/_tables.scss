@@ -1,0 +1,252 @@
+// =====================================================================
+// EJI ONE - tables
+//
+// Covers participants, grades, reports, logs, course management and the
+// report builder. The reference's table language is: uppercase 11px header
+// labels on a tinted bar, 44px rows, a 1px line between rows, a barely-there
+// hover, right-aligned tabular numbers, and horizontal scroll rather than
+// wrapping.
+//
+// Only presentation changes. Sorting, paging, filtering and the download
+// controls are all core behaviour and are left alone.
+// =====================================================================
+
+.table,
+table.generaltable,
+table.flexible,
+.reportbuilder-table {
+    width: 100%;
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--eji-fs-sm);
+    color: var(--eji-ink-800);
+
+    // -----------------------------------------------------------------
+    // Header
+    // -----------------------------------------------------------------
+    thead th,
+    th.header {
+        height: 40px;
+        padding: 0 var(--eji-sp-3);
+        background: var(--eji-bg-alt);
+        border-bottom: 1px solid var(--eji-line);
+        border-top: 0;
+        text-align: left;
+        vertical-align: middle;
+        font-size: var(--eji-fs-xs);
+        font-weight: var(--eji-fw-semibold);
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: var(--eji-ink-500);
+        white-space: nowrap;
+
+        a {
+            color: inherit;
+
+            &:hover {
+                color: var(--eji-ink-800);
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Body
+    // -----------------------------------------------------------------
+    tbody td,
+    tbody th {
+        height: 44px;
+        padding: var(--eji-sp-2) var(--eji-sp-3);
+        vertical-align: middle;
+        border-bottom: 1px solid var(--eji-line);
+        border-top: 0;
+        background: var(--eji-surface);
+        color: var(--eji-ink-800);
+    }
+
+    tbody tr:hover > td,
+    tbody tr:hover > th {
+        background: var(--eji-row-hover);
+    }
+
+    tbody tr:last-child > td {
+        border-bottom: 0;
+    }
+
+    // Numbers line up on the decimal point, as in the reference.
+    td.cell.c1 .no-overflow,
+    .numeric,
+    td[class*="numeric"],
+    .cell.numeric {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+// Sticky header. Moodle already ships a sticky-header helper on several
+// report tables; this makes the plain ones behave the same inside a scroller.
+.table-responsive,
+.no-overflow > .table-responsive {
+    overflow-x: auto;
+    border-radius: var(--eji-r-md);
+
+    > .table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+}
+
+// Striped variants keep the EJI tint rather than Bootstrap's grey.
+.table-striped > tbody > tr:nth-of-type(#{$table-striped-order}) > * {
+    --#{$prefix}table-accent-bg: var(--eji-bg-alt);
+    color: var(--eji-ink-800);
+}
+
+.table-bordered,
+.table-bordered > :not(caption) > * > * {
+    border-color: var(--eji-line);
+}
+
+// Table captions and the "N of M" summaries beneath.
+.table caption,
+.tabledivider + p,
+.paging {
+    font-size: var(--eji-fs-sm);
+    color: var(--eji-ink-500);
+}
+
+// ---------------------------------------------------------------------
+// Pagination
+// ---------------------------------------------------------------------
+.pagination {
+    gap: var(--eji-sp-1);
+    margin: 0;
+
+    .page-link {
+        min-width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--eji-line-2);
+        border-radius: var(--eji-r-md);
+        color: var(--eji-ink-700);
+        font-size: var(--eji-fs-sm);
+
+        &:hover {
+            background: var(--eji-bg-alt);
+        }
+    }
+
+    .page-item.active .page-link {
+        background: var(--eji-accent-600);
+        border-color: var(--eji-accent-600);
+        color: var(--eji-on-dark);
+        font-weight: var(--eji-fw-semibold);
+    }
+
+    .page-item.disabled .page-link {
+        opacity: .5;
+        background: var(--eji-surface);
+        color: var(--eji-ink-400);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Grade tables
+//
+// The gradebook has its own markup and its own colour conventions for
+// pass/fail. Those conventions carry meaning, so only the chrome is restyled;
+// the pass/fail colours are mapped onto the EJI feedback palette rather than
+// removed.
+// ---------------------------------------------------------------------
+.path-grade {
+    .gradeparent table {
+        font-size: var(--eji-fs-sm);
+
+        th.header,
+        td.cell {
+            border-color: var(--eji-line);
+        }
+
+        .heading .cell,
+        tr.heading th {
+            background: var(--eji-bg-alt);
+            color: var(--eji-ink-500);
+            text-transform: uppercase;
+            font-size: var(--eji-fs-xs);
+            letter-spacing: .06em;
+        }
+    }
+
+    .gradepass {
+        color: var(--eji-success-700);
+        font-weight: var(--eji-fw-semibold);
+    }
+
+    .gradefail {
+        color: var(--eji-danger-700);
+        font-weight: var(--eji-fw-semibold);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Report builder
+// ---------------------------------------------------------------------
+.reportbuilder-wrapper {
+    .reportbuilder-report {
+        border: 1px solid var(--eji-line);
+        border-radius: var(--eji-r-lg);
+        overflow: hidden;
+        background: var(--eji-surface);
+    }
+
+    .reportbuilder-filters-wrapper {
+        border-color: var(--eji-line);
+        background: var(--eji-bg-alt);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Participants list
+// ---------------------------------------------------------------------
+#participantsform,
+.userlist {
+    .table thead th {
+        background: var(--eji-bg-alt);
+    }
+
+    .userpicture {
+        border-radius: var(--eji-r-full);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Admin tables that Moodle renders without a .table class
+//
+// Written out rather than @extend-ed: scssphp would hoist .table's rules out
+// of their media queries and inflate the stylesheet considerably.
+// ---------------------------------------------------------------------
+table.admintable,
+table.reporttable {
+    width: 100%;
+    font-size: var(--eji-fs-sm);
+
+    th {
+        padding: var(--eji-sp-2) var(--eji-sp-3);
+        background: var(--eji-bg-alt);
+        border-bottom: 1px solid var(--eji-line);
+        font-size: var(--eji-fs-xs);
+        font-weight: var(--eji-fw-semibold);
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: var(--eji-ink-500);
+    }
+
+    td {
+        padding: var(--eji-sp-2) var(--eji-sp-3);
+        border-bottom: 1px solid var(--eji-line);
+        vertical-align: middle;
+    }
+}

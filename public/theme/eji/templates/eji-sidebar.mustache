@@ -1,0 +1,103 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_eji/eji-sidebar
+
+    EJI ONE navigation sidebar.
+
+    Built on Boost's drawer component on purpose. That gives us, for free and
+    already tested: the open/close JavaScript, the backdrop on small screens,
+    aria-hidden management, closing the other drawers when this one opens, and
+    persistence of the open state as a user preference. Escape-to-close is not
+    part of Boost's drawer, so the theme adds it in javascript/eji-navigation.js
+    for the overlay case only.
+
+    On screens >= 992px the CSS in scss/eji/_navigation.scss pins the drawer
+    open as a permanent column, which is the same breakpoint Boost's own JS
+    already treats as "not small".
+
+    The items themselves come from theme_eji\output\sidebar_navigation, which
+    only emits routes that exist and that the current user may reach.
+
+    Context variables required for this template:
+    * ejibrand - Brand text for the sidebar header.
+    * ejisidebaropen - Whether the sidebar starts open.
+    * ejinav - Array of sections, each with heading, count and items.
+
+    Example context (json):
+    {
+        "ejibrand": "EJI",
+        "ejisidebaropen": true,
+        "ejinav": [
+            {
+                "heading": "Learning",
+                "hasheading": true,
+                "count": 2,
+                "items": [
+                    {"key": "mycourses", "text": "My courses", "url": "/my/courses.php", "icon": "", "isactive": true},
+                    {"key": "catalog", "text": "All courses", "url": "/course/index.php", "icon": "", "isactive": false}
+                ]
+            }
+        ]
+    }
+}}
+{{< theme_boost/drawer }}
+    {{$id}}theme_boost-drawers-primary{{/id}}
+    {{$drawerclasses}}drawer drawer-left drawer-primary eji-sidebar{{#ejisidebaropen}} show{{/ejisidebaropen}}{{/drawerclasses}}
+    {{$drawerpreferencename}}drawer-open-nav{{/drawerpreferencename}}
+    {{$drawerstate}}show-eji-nav{{/drawerstate}}
+    {{$tooltipplacement}}right{{/tooltipplacement}}
+    {{! Keep it open across resizes: above 992px it is a permanent column, not an overlay. }}
+    {{$drawercloseonresize}}0{{/drawercloseonresize}}
+    {{$closebuttontext}}{{#str}}closesidebar, theme_eji{{/str}}{{/closebuttontext}}
+    {{$closebuttonicon}}
+        <span class="dir-rtl-hide">{{#pix}} e/sidebar_left, core {{/pix}}</span>
+        <span class="dir-ltr-hide">{{#pix}} e/sidebar_right, core {{/pix}}</span>
+    {{/closebuttonicon}}
+    {{$drawerheading}}
+        <a href="{{{ config.homeurl }}}" class="eji-sidebar__brand aabtn" title="{{{ sitename }}}">
+            {{# output.should_display_navbar_logo }}
+                <img src="{{output.get_compact_logo_url}}" class="eji-sidebar__logo" alt="{{sitename}}">
+            {{/ output.should_display_navbar_logo }}
+            {{^ output.should_display_navbar_logo }}
+                <span class="eji-sidebar__mark" aria-hidden="true">{{ejibrandmark}}</span>
+            {{/ output.should_display_navbar_logo }}
+            <span class="eji-sidebar__name">{{ejibrand}}</span>
+        </a>
+    {{/drawerheading}}
+    {{$drawercontent}}
+        <nav class="eji-sidebar__nav" aria-label="{{#str}}sidebarnavlabel, theme_eji{{/str}}">
+            {{#ejinav}}
+                {{#hasheading}}
+                    <div class="eji-nav-section">
+                        <span>{{heading}}</span>
+                        <span class="eji-nav-section__count" aria-hidden="true">{{count}}</span>
+                    </div>
+                {{/hasheading}}
+                {{#items}}
+                    <a class="eji-nav-item{{#isactive}} is-active{{/isactive}}"
+                       href="{{{url}}}"
+                       data-eji-nav="{{key}}"
+                       {{#isactive}}aria-current="page"{{/isactive}}>
+                        {{{icon}}}
+                        <span class="eji-nav-item__text">{{text}}</span>
+                    </a>
+                {{/items}}
+            {{/ejinav}}
+        </nav>
+    {{/drawercontent}}
+{{/ theme_boost/drawer}}

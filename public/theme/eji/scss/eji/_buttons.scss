@@ -1,0 +1,131 @@
+// =====================================================================
+// EJI ONE - buttons
+//
+// Colour, radius and weight all arrive from the tokens in _tokens.scss. What
+// is left here is geometry (the reference's 40px / 32px heights) and the few
+// Moodle button variants that Bootstrap does not define.
+// =====================================================================
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--eji-sp-2);
+    min-height: 40px;
+    white-space: nowrap;
+    transition: background-color var(--eji-transition), border-color var(--eji-transition), color var(--eji-transition);
+
+    &:disabled,
+    &.disabled {
+        opacity: .55;
+        cursor: not-allowed;
+    }
+}
+
+.btn-sm {
+    min-height: 32px;
+}
+
+.btn-lg {
+    min-height: 48px;
+    font-size: var(--eji-fs-md);
+}
+
+// Primary. The reference calls this the "action" button.
+.btn-primary {
+    --#{$prefix}btn-bg: var(--eji-accent-600);
+    --#{$prefix}btn-border-color: var(--eji-accent-600);
+    --#{$prefix}btn-hover-bg: var(--eji-accent-700);
+    --#{$prefix}btn-hover-border-color: var(--eji-accent-700);
+    --#{$prefix}btn-active-bg: var(--eji-primary-700);
+    --#{$prefix}btn-active-border-color: var(--eji-primary-700);
+    --#{$prefix}btn-color: var(--eji-on-dark);
+    --#{$prefix}btn-hover-color: var(--eji-on-dark);
+    --#{$prefix}btn-active-color: var(--eji-on-dark);
+}
+
+// Secondary. In the reference this is a white button with a grey border, not
+// Bootstrap's filled grey - it is the Cancel / Back / View details button.
+.btn-secondary {
+    --#{$prefix}btn-bg: var(--eji-surface);
+    --#{$prefix}btn-border-color: var(--eji-line-2);
+    --#{$prefix}btn-color: var(--eji-ink-700);
+    --#{$prefix}btn-hover-bg: var(--eji-bg-alt);
+    --#{$prefix}btn-hover-border-color: var(--eji-line-2);
+    --#{$prefix}btn-hover-color: var(--eji-ink-900);
+    --#{$prefix}btn-active-bg: var(--eji-line);
+    --#{$prefix}btn-active-border-color: var(--eji-line-2);
+    --#{$prefix}btn-active-color: var(--eji-ink-900);
+}
+
+.btn-outline-secondary {
+    --#{$prefix}btn-border-color: var(--eji-line-2);
+    --#{$prefix}btn-color: var(--eji-ink-700);
+    --#{$prefix}btn-hover-bg: var(--eji-bg-alt);
+    --#{$prefix}btn-hover-border-color: var(--eji-ink-400);
+    --#{$prefix}btn-hover-color: var(--eji-ink-900);
+}
+
+// Ghost / link buttons.
+.btn-link {
+    --#{$prefix}btn-color: var(--eji-accent-600);
+    --#{$prefix}btn-hover-color: var(--eji-accent-700);
+    min-height: 0;
+    font-weight: var(--eji-fw-medium);
+}
+
+// Icon-only buttons: the topbar actions, drawer toggles, action menus.
+.btn-icon {
+    min-height: 0;
+    color: var(--eji-ink-500);
+    border-radius: var(--eji-r-md);
+
+    &:hover,
+    &:focus {
+        background: var(--eji-bg-alt);
+        color: var(--eji-ink-800);
+    }
+}
+
+// Moodle's own "single button" wrapper and form action rows.
+.singlebutton .btn,
+.form-buttons .btn,
+.mform .form-group .btn {
+    min-height: 40px;
+}
+
+// Action menu triggers (the three-dot menus on courses and activities).
+.action-menu-trigger .btn,
+.action-menu .dropdown-toggle {
+    color: var(--eji-ink-500);
+
+    &:hover {
+        color: var(--eji-ink-800);
+        background: var(--eji-bg-alt);
+    }
+}
+
+// Button groups, used for the view switchers on My courses and reports.
+.btn-group {
+    .btn {
+        min-height: 32px;
+    }
+
+    > .btn-check:checked + .btn,
+    > .btn.active {
+        background: var(--eji-accent-50);
+        border-color: var(--eji-accent-600);
+        color: var(--eji-accent-700);
+        font-weight: var(--eji-fw-semibold);
+    }
+}
+
+// Focus ring. Bootstrap's $focus-ring-* tokens already carry the EJI accent;
+// this makes sure the ring is never clipped by an overflow container.
+.btn:focus-visible,
+.page-link:focus-visible {
+    outline: none;
+    box-shadow: var(--eji-sh-focus);
+    position: relative;
+    z-index: 1;
+}

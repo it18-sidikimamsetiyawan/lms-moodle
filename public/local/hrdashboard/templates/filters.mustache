@@ -1,0 +1,106 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_hrdashboard/filters
+
+    Filter toolbar: search + the three most used selects inline, the rest
+    behind "More filters", and active-filter chips underneath.
+
+    Context variables required for this template:
+    * action, hidden - [{name, value}]
+    * search, categories, courses, statuses - [{value, label, selected}]
+    * attributes - [{name, label, options: [{value, label, selected}]}]
+    * from, to, showcourse, showstatus, showdates
+    * hasadvanced, advancedopen, advancedcount
+    * chips - [{label, url}], haschips, reseturl, uid
+
+    Example context (json):
+    {
+        "action": "/local/hrdashboard/index.php", "hidden": [], "search": "",
+        "categories": [], "courses": [], "statuses": [], "attributes": [],
+        "from": "", "to": "", "showcourse": true, "showstatus": true, "showdates": true,
+        "hasadvanced": true, "advancedopen": false, "advancedcount": 0,
+        "chips": [], "haschips": false, "reseturl": "/local/hrdashboard/index.php", "uid": "f1"
+    }
+}}
+<form class="hrd-toolbar" method="get" action="{{{action}}}" role="search" aria-label="{{#str}}filters, local_hrdashboard{{/str}}" data-hrd-autosubmit>
+    {{#hidden}}<input type="hidden" name="{{name}}" value="{{value}}">{{/hidden}}
+    <label class="hrd-toolbar__search">
+        <span class="visually-hidden sr-only">{{#str}}filter:search, local_hrdashboard{{/str}}</span>
+        {{#pix}}a/search, core{{/pix}}
+        <input class="form-control" type="search" name="search" value="{{search}}" placeholder="{{#str}}filter:searchplaceholder, local_hrdashboard{{/str}}">
+    </label>
+    <select class="form-select" name="category" aria-label="{{#str}}filter:category, local_hrdashboard{{/str}}">
+        <option value="0">{{#str}}filter:allcategories, local_hrdashboard{{/str}}</option>
+        {{#categories}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/categories}}
+    </select>
+    {{#showcourse}}
+    <select class="form-select" name="course" aria-label="{{#str}}filter:course, local_hrdashboard{{/str}}">
+        <option value="0">{{#str}}filter:allcourses, local_hrdashboard{{/str}}</option>
+        {{#courses}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/courses}}
+    </select>
+    {{/showcourse}}
+    {{#showstatus}}
+    <select class="form-select" name="status" aria-label="{{#str}}filter:status, local_hrdashboard{{/str}}">
+        <option value="">{{#str}}filter:allstatuses, local_hrdashboard{{/str}}</option>
+        {{#statuses}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/statuses}}
+    </select>
+    {{/showstatus}}
+    {{#hasadvanced}}
+    <button class="hrd-toolbar__more" type="button" data-bs-toggle="collapse" data-toggle="collapse" data-bs-target="#hrd-adv-{{uid}}" data-target="#hrd-adv-{{uid}}" aria-expanded="{{#advancedopen}}true{{/advancedopen}}{{^advancedopen}}false{{/advancedopen}}" aria-controls="hrd-adv-{{uid}}">
+        {{#pix}}i/filter, core{{/pix}} {{#str}}filters:more, local_hrdashboard{{/str}}
+        {{#advancedcount}}<span class="hrd-toolbar__count">{{advancedcount}}</span>{{/advancedcount}}
+    </button>
+    {{/hasadvanced}}
+    <div class="hrd-toolbar__actions">
+        <button type="submit" class="btn btn-primary">{{#str}}apply, local_hrdashboard{{/str}}</button>
+    </div>
+    {{#hasadvanced}}
+    <div class="hrd-toolbar__advanced collapse{{#advancedopen}} show{{/advancedopen}}" id="hrd-adv-{{uid}}">
+        <div class="hrd-toolbar__grid">
+            {{#attributes}}
+            <div>
+                <label for="hrd-f-{{uid}}-{{name}}">{{label}}</label>
+                <select class="form-select" id="hrd-f-{{uid}}-{{name}}" name="{{name}}">
+                    <option value="">{{#str}}filter:all, local_hrdashboard{{/str}}</option>
+                    {{#options}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}}</option>{{/options}}
+                </select>
+            </div>
+            {{/attributes}}
+            {{#showdates}}
+            <div>
+                <label for="hrd-f-{{uid}}-from">{{#str}}filter:from, local_hrdashboard{{/str}}</label>
+                <input class="form-control" type="date" id="hrd-f-{{uid}}-from" name="from" value="{{from}}">
+            </div>
+            <div>
+                <label for="hrd-f-{{uid}}-to">{{#str}}filter:to, local_hrdashboard{{/str}}</label>
+                <input class="form-control" type="date" id="hrd-f-{{uid}}-to" name="to" value="{{to}}">
+            </div>
+            {{/showdates}}
+        </div>
+    </div>
+    {{/hasadvanced}}
+</form>
+{{#haschips}}
+<div class="hrd-chips" aria-label="{{#str}}filters:active, local_hrdashboard{{/str}}">
+    <span>{{#str}}filters:active, local_hrdashboard{{/str}}:</span>
+    {{#chips}}
+    <a class="hrd-chip" href="{{{url}}}" aria-label="{{#str}}filters:remove, local_hrdashboard, {{label}}{{/str}}">{{label}} <span class="hrd-chip__x" aria-hidden="true">&times;</span></a>
+    {{/chips}}
+    <a class="hrd-chips__clear" href="{{{reseturl}}}">{{#str}}filters:clearall, local_hrdashboard{{/str}}</a>
+</div>
+{{/haschips}}

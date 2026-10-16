@@ -1,0 +1,25 @@
+// EJI ONE - SCSS injected after Bootstrap and all of Moodle's component styles.
+//
+// Read by theme_eji_get_extra_scss() (see lib.php). Anything that could have
+// been achieved by setting a token in pre.scss belongs there instead; this file
+// is for EJI components that have no Moodle equivalent, and for the handful of
+// structural changes (persistent sidebar, compact topbar) that tokens cannot
+// express.
+
+@import "eji/root";
+@import "eji/layout";
+@import "eji/navigation";
+@import "eji/cards";
+@import "eji/buttons";
+@import "eji/forms";
+@import "eji/tables";
+@import "eji/badges";
+@import "eji/progress";
+@import "eji/dashboard";
+@import "eji/course";
+@import "eji/catalog";
+@import "eji/lesson";
+@import "eji/quiz";
+@import "eji/login";
+@import "eji/profile";
+@import "eji/responsive";

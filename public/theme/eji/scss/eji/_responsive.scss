@@ -1,0 +1,216 @@
+// =====================================================================
+// EJI ONE - responsive behaviour
+//
+// Target widths from the brief: 1920 / 1440 / 1366 desktop, 768 tablet,
+// 414 / 390 mobile.
+//
+// Most of the responsive work is already done where it belongs - beside the
+// component it affects - so this file only carries the rules that are about
+// the page as a whole, plus the two things that have to be stated once:
+// no horizontal page scroll, and a usable gutter on a phone.
+//
+// Breakpoints follow Bootstrap's, which is also what Moodle's own JavaScript
+// uses (core/pagehelpers treats < 991px as "small"), so CSS and behaviour
+// switch at the same width instead of half a step apart.
+// =====================================================================
+
+// ---------------------------------------------------------------------
+// Never scroll the page sideways
+//
+// Wide tables and iframes are the usual culprits. They get their own
+// scroller rather than pushing the whole layout.
+// ---------------------------------------------------------------------
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+#page-content,
+#region-main {
+    min-width: 0;
+}
+
+// Anything genuinely wider than the column scrolls inside itself.
+.table-responsive,
+.no-overflow,
+.reportbuilder-table-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+// Embedded media (videos in a lesson, H5P, external tools).
+#region-main {
+    iframe,
+    embed,
+    object,
+    video {
+        max-width: 100%;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+// Long words and URLs in user-generated content must not widen the column.
+#region-main .no-overflow,
+.activity-description,
+.forumpost .posttext {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+// ---------------------------------------------------------------------
+// Very wide screens (1920 and up)
+//
+// Reading measure is capped so text does not run the full width of the
+// monitor, while tables and dashboards keep the space they need.
+// ---------------------------------------------------------------------
+@media (min-width: 1600px) {
+    .pagelayout-incourse,
+    .pagelayout-standard {
+        #region-main {
+            max-width: 1180px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+}
+
+// ---------------------------------------------------------------------
+// Tablet (768)
+// ---------------------------------------------------------------------
+@include media-breakpoint-down(lg) {
+    // The sidebar is an overlay here, so the content column is full width.
+    #page-wrapper {
+        padding-left: 0;
+    }
+
+    .eji-topbar {
+        left: 0;
+    }
+
+    #page.drawers .main-inner {
+        padding-left: var(--eji-sp-4);
+        padding-right: var(--eji-sp-4);
+    }
+}
+
+// ---------------------------------------------------------------------
+// Phone (414 / 390 and below)
+// ---------------------------------------------------------------------
+@include media-breakpoint-down(sm) {
+    // 16px side gutter, as in the reference.
+    #page.drawers .main-inner {
+        padding-left: var(--eji-sp-4);
+        padding-right: var(--eji-sp-4);
+    }
+
+    #region-main {
+        padding: var(--eji-sp-4);
+        border-radius: var(--eji-r-md);
+    }
+
+    .eji-topbar__inner {
+        padding: 0 var(--eji-sp-3);
+    }
+
+    .eji-topbar__title {
+        font-size: var(--eji-fs-sm);
+        max-width: 45vw;
+    }
+
+    // Page headings step down so a long course name still fits two lines.
+    #page-header h1,
+    .eji-dash__welcome {
+        font-size: var(--eji-fs-lg);
+    }
+
+    // Full-width primary actions read better than centred short buttons.
+    .singlebutton .btn,
+    .eji-continue__action .btn,
+    .quizstartbuttondiv .btn {
+        width: 100%;
+    }
+
+    // Course and activity rows get their padding back.
+    .course-content .section .activity-item {
+        padding: var(--eji-sp-3) var(--eji-sp-4);
+    }
+
+    .course-content .course-section-header {
+        padding: var(--eji-sp-3) var(--eji-sp-4);
+    }
+
+    // Tables: keep the header legible while scrolling horizontally.
+    .table,
+    table.generaltable {
+        font-size: var(--eji-fs-xs);
+
+        thead th {
+            padding: 0 var(--eji-sp-2);
+        }
+
+        tbody td,
+        tbody th {
+            padding: var(--eji-sp-2);
+        }
+    }
+
+    // The KPI row stays two-up rather than stacking into a tall column.
+    .eji-kpi {
+        padding: var(--eji-sp-3);
+    }
+
+    .eji-kpi__value {
+        font-size: var(--eji-fs-lg);
+    }
+
+    .eji-kpi__ico {
+        width: 26px;
+        height: 26px;
+    }
+}
+
+// ---------------------------------------------------------------------
+// Very small phones (360 and below)
+// ---------------------------------------------------------------------
+@media (max-width: 360px) {
+    .eji-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--eji-sp-2);
+    }
+
+    .eji-kpi__label {
+        font-size: 10px;
+    }
+}
+
+// ---------------------------------------------------------------------
+// Accessibility and motion
+// ---------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+    .eji-topbar,
+    #page-wrapper,
+    .drawer,
+    .progress-bar,
+    .eji-kpi,
+    .course-card {
+        transition: none;
+    }
+}
+
+// Touch targets. WCAG asks for 44px; the reference's 40px controls are kept on
+// pointer devices and raised on touch, where accuracy is lower.
+@media (pointer: coarse) {
+    .btn,
+    .eji-nav-item,
+    .page-link,
+    .form-control,
+    .form-select {
+        min-height: 44px;
+    }
+}

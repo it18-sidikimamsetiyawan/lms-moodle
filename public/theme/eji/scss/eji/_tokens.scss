@@ -1,0 +1,569 @@
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+// =====================================================================
+// EJI ONE DESIGN TOKENS
+//
+// Single source of truth for the whole theme. Values are transcribed from
+// the EJI ONE UI reference (budgeting-dashboard-fico-sap_2.html, :root block).
+//
+// This file is included from scss/pre.scss, which Moodle injects BEFORE
+// Boost's preset. Because every Moodle Design System token and every
+// Bootstrap variable is declared with !default, assigning them here wins for
+// the entire compile - Bootstrap, all of Moodle's component SCSS, and our own
+// partials alike. Nothing in core or in theme_boost is edited.
+//
+// Three layers, in order:
+//   1. $eji-*   raw palette, the only place a hex code is written;
+//   2. $mds-*   Moodle Design System tokens, pointed at the EJI palette;
+//   3. Bootstrap variables, pointed at the same palette.
+//
+// The same $eji-* values are re-emitted as CSS custom properties in
+// eji/_root.scss so that EJI-specific components can use them at runtime.
+// =====================================================================
+
+
+// ---------------------------------------------------------------------
+// 0. Typography assets
+//
+// Poppins is self-hosted in theme/eji/fonts/ rather than loaded from a CDN:
+// production (lms.eji.co.id) is not guaranteed outbound access to
+// fonts.gstatic.com, and a CDN would add a network dependency to every page
+// load. [[font:theme|...]] is resolved by theme_config::post_process() to
+// theme/font.php, which serves from this theme's fonts/ directory.
+// ---------------------------------------------------------------------
+$eji-font-weights: (
+    400: "Regular",
+    500: "Medium",
+    600: "SemiBold",
+    700: "Bold",
+    800: "ExtraBold",
+);
+
+@each $weight, $name in $eji-font-weights {
+    // Latin.
+    @font-face {
+        font-family: "Poppins";
+        font-style: normal;
+        font-weight: $weight;
+        font-display: swap;
+        src: url("[[font:theme|Poppins-#{$name}.woff2]]") format("woff2");
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+            U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+            U+FEFF, U+FFFD;
+    }
+    // Latin Extended - keeps Indonesian and European names rendering correctly.
+    @font-face {
+        font-family: "Poppins";
+        font-style: normal;
+        font-weight: $weight;
+        font-display: swap;
+        src: url("[[font:theme|Poppins-#{$name}-ext.woff2]]") format("woff2");
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+            U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
+            U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+}
+
+
+// ---------------------------------------------------------------------
+// 1. EJI palette - the only place hex codes are written
+// ---------------------------------------------------------------------
+
+// Primary (deep navy).
+$eji-primary-900: #0b1236;
+$eji-primary-800: #101b4d;
+$eji-primary-700: #152568;
+$eji-primary-600: #1d3184;
+$eji-primary-500: #2a44a8;
+$eji-primary-400: #3f5cc4;
+$eji-primary-100: #c7d2f2;
+$eji-primary-50: #eff3fe;
+
+// Sidebar.
+$eji-side-bg: #152568;
+$eji-side-active: #2a3d8c;
+$eji-side-text: #c3cdec;
+$eji-side-muted: #93a2d4;
+
+// Accent (interactive blue).
+$eji-accent-700: #1a3fae;
+$eji-accent-600: #1d4ed8;
+$eji-accent-50: #eff6ff;
+
+// Feedback.
+$eji-success-700: #0b5f52;
+$eji-success-600: #0f7b6c;
+$eji-success-50: #e6f4f1;
+$eji-warning-700: #6e4a14;
+$eji-warning-600: #96631a;
+$eji-warning-50: #fdf6e7;
+$eji-danger-700: #a81e1e;
+$eji-danger-600: #d12b2b;
+$eji-danger-50: #fdecec;
+$eji-excel-600: #1d7044;
+
+// Ink (text).
+$eji-ink-900: #0f172a;
+$eji-ink-800: #1e293b;
+$eji-ink-700: #334155;
+$eji-ink-600: #475569;
+$eji-ink-500: #64748b;
+$eji-ink-450: #68768c;
+$eji-ink-400: #8695ac;
+
+// Surfaces and lines.
+$eji-bg: #f4f6fb;
+$eji-bg-alt: #f8fafc;
+$eji-surface: #ffffff;
+$eji-row-hover: #fbfcfe;
+$eji-line: #e2e8f0;
+$eji-line-2: #cbd5e1;
+$eji-on-dark: #ffffff;
+
+// Status palette. Mapped onto Moodle's activity/course states in _badges.scss.
+$eji-st-draft: #94a3b8;
+$eji-st-draft-ink: #475569;
+$eji-st-draft-bg: #f1f5f9;
+$eji-st-waiting: #3b82f6;
+$eji-st-waiting-ink: #1d4ed8;
+$eji-st-waiting-bg: #eff6ff;
+$eji-st-onprocess: #f59e0b;
+$eji-st-onprocess-ink: #8c5a11;
+$eji-st-onprocess-bg: #fdf6e7;
+$eji-st-approved: #16a34a;
+$eji-st-approved-ink: #15803d;
+$eji-st-approved-bg: #ecfdf3;
+$eji-st-revised: #f97316;
+$eji-st-revised-ink: #c2410c;
+$eji-st-revised-bg: #fff4ed;
+$eji-st-rejected: #dc2626;
+$eji-st-rejected-ink: #a81e1e;
+$eji-st-rejected-bg: #fdecec;
+$eji-st-cancelled: #6b7280;
+$eji-st-cancelled-ink: #4b5563;
+$eji-st-cancelled-bg: #f4f6fb;
+$eji-st-closed: #0f172a;
+$eji-st-closed-ink: #0f172a;
+$eji-st-closed-bg: #e7eaf0;
+$eji-st-hold: #a855f7;
+$eji-st-hold-ink: #7e22ce;
+$eji-st-hold-bg: #faf5ff;
+
+// Categorical series (charts, grade colours, report bars).
+$eji-c1: #152568;
+$eji-c2: #1d4ed8;
+$eji-c3: #3f5cc4;
+$eji-c4: #0f7b6c;
+$eji-c5: #b7791f;
+$eji-c6: #7288dd;
+
+// Scrims and veils.
+$eji-scrim: rgba(15, 23, 42, .45);
+$eji-veil: rgba(255, 255, 255, .72);
+
+// Type.
+$eji-font: "Poppins", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+$eji-font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+
+// Type scale. The reference is px-based; rem keeps browser zoom working.
+$eji-fs-xs: .6875rem;   // 11px
+$eji-fs-sm: .75rem;     // 12px
+$eji-fs-base: .875rem;  // 14px
+$eji-fs-md: 1rem;       // 16px
+$eji-fs-lg: 1.25rem;    // 20px
+$eji-fs-xl: 1.625rem;   // 26px
+$eji-fs-kpi: 2.125rem;  // 34px
+
+// Reading size. Deliberately larger than the UI base: the reference is a dense
+// data dashboard, an LMS is read for minutes at a time. Applied to course,
+// lesson, quiz and forum content only - see _layout.scss.
+$eji-fs-reading: .9375rem; // 15px
+
+$eji-fw-regular: 400;
+$eji-fw-medium: 500;
+$eji-fw-semibold: 600;
+$eji-fw-bold: 700;
+$eji-fw-extra: 800;
+
+// Spacing.
+$eji-sp-1: .25rem;
+$eji-sp-2: .5rem;
+$eji-sp-3: .75rem;
+$eji-sp-4: 1rem;
+$eji-sp-5: 1.25rem;
+$eji-sp-6: 1.5rem;
+$eji-sp-8: 2rem;
+$eji-sp-10: 2.5rem;
+
+// Radius.
+$eji-r-sm: .375rem;  // 6px
+$eji-r-md: .5rem;    // 8px
+$eji-r-lg: .75rem;   // 12px
+$eji-r-full: 999px;
+
+// Elevation.
+$eji-sh-sm: 0 1px 3px rgba(15, 23, 42, .06);
+$eji-sh-md: 0 4px 12px rgba(15, 23, 42, .08);
+$eji-sh-lg: 0 8px 24px rgba(15, 23, 42, .10);
+
+// Motion.
+$eji-transition: .16s ease;
+
+// Frame.
+$eji-topbar-h: 60px;
+$eji-side-width: 264px;
+
+// Breakpoint at which the sidebar stops being an overlay drawer and becomes a
+// persistent column. Chosen as lg (992px) rather than md so that, inside a
+// course, the EJI sidebar and Moodle's course index never fight for the same
+// screen edge on a tablet. See docs/moodle-eji-ui-analysis.md R2.
+$eji-side-persistent-from: 992px;
+
+
+// ---------------------------------------------------------------------
+// 2. Moodle Design System tokens -> EJI palette
+//
+// These are consumed by theme/boost/scss/preset/default.scss to build the
+// Bootstrap palette. Overriding them keeps the MDS as the single upstream
+// vocabulary instead of introducing a competing one.
+// ---------------------------------------------------------------------
+
+// Primitives: greys become the EJI ink/line scale, blues become the EJI accent.
+$mds-color-gray-white: $eji-surface;
+$mds-color-gray-100: $eji-bg-alt;
+$mds-color-gray-200: $eji-line;
+$mds-color-gray-300: $eji-line-2;
+$mds-color-gray-400: $eji-st-draft;
+$mds-color-gray-500: $eji-ink-400;
+$mds-color-gray-600: $eji-ink-500;
+$mds-color-gray-700: $eji-ink-700;
+$mds-color-gray-800: $eji-ink-800;
+$mds-color-gray-900: $eji-ink-900;
+$mds-color-gray-black: #000000;
+
+$mds-color-blue-100: $eji-accent-50;
+$mds-color-blue-200: $eji-primary-100;
+$mds-color-blue-300: $eji-c6;
+$mds-color-blue-400: $eji-primary-400;
+$mds-color-blue-500: $eji-accent-600;
+$mds-color-blue-600: $eji-accent-700;
+$mds-color-blue-700: $eji-primary-700;
+$mds-color-blue-800: $eji-primary-800;
+$mds-color-blue-900: $eji-primary-900;
+
+// Surfaces.
+$mds-bg-surface-default: $eji-surface;
+$mds-bg-surface-subtle: $eji-bg-alt;
+$mds-bg-surface-strong: $eji-line;
+
+// Borders.
+$mds-border-default: $eji-line;
+$mds-border-subtle: $eji-line;
+$mds-border-feedback-secondary: $eji-line;
+
+// Text.
+$mds-text-default: $eji-ink-800;
+$mds-text-emphasis: $eji-ink-900;
+$mds-text-subtle: $eji-ink-700;
+$mds-text-muted: $eji-ink-500;
+$mds-text-inverse: $eji-on-dark;
+$mds-text-danger: $eji-danger-600;
+$mds-text-link-primary-default: $eji-accent-600;
+$mds-text-link-primary-hover: $eji-accent-700;
+
+// Interactive - primary.
+$mds-bg-interactive-primary-default: $eji-accent-600;
+$mds-bg-interactive-primary-hover: $eji-accent-700;
+$mds-bg-interactive-primary-active: $eji-primary-700;
+$mds-bg-interactive-primary-disabled: $eji-primary-100;
+$mds-border-interactive-primary-default: $eji-accent-600;
+$mds-border-interactive-primary-hover: $eji-accent-600;
+$mds-border-interactive-primary-active: $eji-accent-700;
+$mds-border-interactive-primary-disabled: $eji-primary-100;
+
+// Interactive - secondary.
+$mds-bg-interactive-secondary-default: $eji-surface;
+$mds-bg-interactive-secondary-hover: $eji-bg-alt;
+$mds-bg-interactive-secondary-active: $eji-line;
+$mds-bg-interactive-secondary-disabled: $eji-bg-alt;
+$mds-border-interactive-secondary-default: $eji-line-2;
+$mds-border-interactive-secondary-hover: $eji-ink-400;
+$mds-border-interactive-secondary-active: $eji-ink-600;
+$mds-border-interactive-secondary-disabled: $eji-line;
+
+// Interactive - danger.
+$mds-bg-interactive-danger-default: $eji-danger-600;
+$mds-bg-interactive-danger-hover: $eji-danger-700;
+$mds-bg-interactive-danger-active: $eji-danger-700;
+$mds-border-interactive-danger-default: $eji-danger-600;
+$mds-border-interactive-danger-hover: $eji-danger-600;
+$mds-border-interactive-danger-active: $eji-danger-700;
+
+// Feedback.
+$mds-bg-feedback-primary-default: $eji-accent-600;
+$mds-bg-feedback-primary-subtle: $eji-accent-50;
+$mds-border-feedback-primary: $eji-primary-100;
+$mds-text-feedback-primary: $eji-primary-800;
+
+$mds-bg-feedback-success-default: $eji-success-600;
+$mds-bg-feedback-success-subtle: $eji-success-50;
+$mds-border-feedback-success: $eji-success-600;
+$mds-text-feedback-success: $eji-success-700;
+
+$mds-bg-feedback-warning-default: $eji-warning-600;
+$mds-bg-feedback-warning-subtle: $eji-warning-50;
+$mds-border-feedback-warning: $eji-warning-600;
+$mds-text-feedback-warning: $eji-warning-700;
+
+$mds-bg-feedback-danger-default: $eji-danger-600;
+$mds-bg-feedback-danger-subtle: $eji-danger-50;
+$mds-border-feedback-danger: $eji-danger-600;
+$mds-text-feedback-danger: $eji-danger-700;
+
+$mds-bg-feedback-info-default: $eji-primary-500;
+$mds-bg-feedback-info-subtle: $eji-primary-50;
+$mds-border-feedback-info: $eji-primary-100;
+$mds-text-feedback-info: $eji-primary-800;
+
+$mds-bg-feedback-secondary-subtle: $eji-bg-alt;
+$mds-text-feedback-secondary: $eji-ink-700;
+
+// Focus.
+$mds-focus-default: $eji-accent-600;
+
+// Typography.
+$mds-font-family-base: $eji-font;
+$mds-font-family-code: $eji-font-mono;
+$mds-font-size-paragraph-default: $eji-fs-base;
+$mds-font-size-paragraph-small: $eji-fs-sm;
+$mds-font-size-paragraph-lead: $eji-fs-md;
+
+// Radius.
+$mds-border-radius-sm: $eji-r-sm;
+$mds-border-radius-md: $eji-r-md;
+$mds-border-radius-lg: $eji-r-lg;
+$mds-border-radius-pill: $eji-r-full;
+
+// Shadows.
+$mds-color-sm: rgba(15, 23, 42, .06);
+$mds-color-md: rgba(15, 23, 42, .08);
+$mds-color-lg: rgba(15, 23, 42, .10);
+
+
+// ---------------------------------------------------------------------
+// 3. Bootstrap variables -> EJI palette
+//
+// Boost's preset maps most colour variables from the MDS tokens above, but
+// typography, spacing, radius, shadow and component sizing come straight from
+// vanilla Bootstrap. Those are set here.
+// ---------------------------------------------------------------------
+
+// Semantic colours. Set explicitly rather than relying on the preset's
+// $blue -> $primary chain, so the intent is readable at a glance.
+$primary: $eji-accent-600;
+$secondary: $eji-line-2;
+$success: $eji-success-600;
+$info: $eji-primary-500;
+$warning: $eji-warning-600;
+$danger: $eji-danger-600;
+$light: $eji-bg-alt;
+$dark: $eji-ink-900;
+
+// Body.
+$body-bg: $eji-bg;
+$body-color: $eji-ink-800;
+$body-secondary-color: $eji-ink-500;
+$body-tertiary-bg: $eji-bg-alt;
+$border-color: $eji-line;
+
+// Links.
+$link-color: $eji-accent-600;
+$link-hover-color: $eji-accent-700;
+$link-decoration: none;
+$link-hover-decoration: underline;
+
+// Typography.
+$font-family-sans-serif: $eji-font;
+$font-family-monospace: $eji-font-mono;
+$font-size-base: $eji-fs-base;
+$font-size-sm: $eji-fs-sm;
+$font-size-lg: $eji-fs-md;
+$line-height-base: 1.5;
+
+// Headings follow the reference scale rather than Bootstrap's multipliers, so
+// a page title is 26px as designed instead of 2.5 x 14px.
+$h1-font-size: $eji-fs-xl;     // 26px
+$h2-font-size: $eji-fs-lg;     // 20px
+$h3-font-size: 1.125rem;       // 18px
+$h4-font-size: $eji-fs-md;     // 16px
+$h5-font-size: $eji-fs-base;   // 14px
+$h6-font-size: $eji-fs-sm;     // 12px
+$headings-font-weight: $eji-fw-semibold;
+$headings-color: $eji-ink-900;
+$headings-line-height: 1.3;
+
+$font-weight-medium: $eji-fw-medium;
+$font-weight-semibold: $eji-fw-semibold;
+$font-weight-bold: $eji-fw-bold;
+
+// Radius.
+$border-radius: $eji-r-md;
+$border-radius-sm: $eji-r-sm;
+$border-radius-lg: $eji-r-lg;
+$border-radius-xl: 1rem;
+$border-radius-pill: $eji-r-full;
+
+// Elevation.
+$box-shadow-sm: $eji-sh-sm;
+$box-shadow: $eji-sh-md;
+$box-shadow-lg: $eji-sh-lg;
+
+// Focus ring - the reference uses a 3px ring at 25% accent.
+$focus-ring-width: 3px;
+$focus-ring-opacity: .25;
+$focus-ring-color: rgba($eji-accent-600, $focus-ring-opacity);
+
+// Controls. 40px tall inputs and buttons, 32px for the small variants.
+$input-btn-padding-y: .5rem;
+$input-btn-padding-x: $eji-sp-4;
+$input-btn-padding-y-sm: .3125rem;
+$input-btn-padding-x-sm: $eji-sp-3;
+$input-btn-font-size: $eji-fs-base;
+$input-btn-font-size-sm: $eji-fs-sm;
+$input-btn-focus-width: $focus-ring-width;
+
+$btn-font-weight: $eji-fw-semibold;
+$btn-border-radius: $eji-r-md;
+$btn-border-radius-sm: $eji-r-sm;
+$btn-border-radius-lg: $eji-r-md;
+
+$input-bg: $eji-surface;
+$input-color: $eji-ink-800;
+$input-border-color: $eji-line-2;
+$input-focus-border-color: $eji-accent-600;
+$input-placeholder-color: $eji-ink-400;
+$input-border-radius: $eji-r-md;
+$form-label-font-weight: $eji-fw-semibold;
+$form-label-font-size: $eji-fs-sm;
+$form-label-color: $eji-ink-700;
+
+// Cards - the EJI card is the single most repeated surface in the reference.
+$card-bg: $eji-surface;
+$card-border-color: $eji-line;
+$card-border-radius: $eji-r-lg;
+$card-inner-border-radius: $eji-r-lg;
+$card-cap-bg: $eji-surface;
+$card-spacer-y: $eji-sp-4;
+$card-spacer-x: $eji-sp-6;
+$card-box-shadow: $eji-sh-sm;
+
+// Tables.
+$table-cell-padding-y: .6875rem;
+$table-cell-padding-x: $eji-sp-3;
+$table-color: $eji-ink-800;
+$table-bg: $eji-surface;
+$table-border-color: $eji-line;
+$table-hover-bg: $eji-row-hover;
+$table-striped-bg: $eji-bg-alt;
+
+// Dropdowns.
+$dropdown-bg: $eji-surface;
+$dropdown-border-color: $eji-line;
+$dropdown-border-radius: $eji-r-md;
+$dropdown-box-shadow: $eji-sh-lg;
+$dropdown-link-color: $eji-ink-700;
+$dropdown-link-hover-color: $eji-ink-900;
+$dropdown-link-hover-bg: $eji-bg-alt;
+$dropdown-link-active-color: $eji-on-dark;
+$dropdown-link-active-bg: $eji-accent-600;
+$dropdown-font-size: $eji-fs-base;
+
+// Navs and tabs.
+$nav-link-font-size: $eji-fs-base;
+$nav-link-font-weight: $eji-fw-medium;
+$nav-link-color: $eji-ink-500;
+$nav-link-hover-color: $eji-ink-800;
+$nav-tabs-border-color: $eji-line;
+$nav-tabs-link-active-color: $eji-accent-600;
+$nav-tabs-link-active-bg: transparent;
+$nav-tabs-link-active-border-color: transparent transparent $eji-accent-600;
+
+// Badges.
+$badge-font-size: $eji-fs-xs;
+$badge-font-weight: $eji-fw-semibold;
+$badge-padding-y: .25rem;
+$badge-padding-x: $eji-sp-2;
+$badge-border-radius: $eji-r-full;
+
+// Progress - 6px rail, fully rounded, exactly as the reference.
+$progress-height: 6px;
+$progress-bg: $eji-line;
+$progress-border-radius: $eji-r-full;
+$progress-bar-bg: $eji-accent-600;
+$progress-box-shadow: none;
+
+// Alerts.
+$alert-border-radius: $eji-r-md;
+$alert-padding-y: $eji-sp-3;
+$alert-padding-x: $eji-sp-4;
+
+// Modals, popovers, tooltips.
+$modal-content-border-radius: $eji-r-lg;
+$modal-content-border-color: $eji-line;
+$modal-content-box-shadow-xs: $eji-sh-lg;
+$modal-content-box-shadow-sm-up: $eji-sh-lg;
+$modal-backdrop-bg: #0f172a;
+$modal-backdrop-opacity: .45;
+$popover-border-radius: $eji-r-md;
+$popover-border-color: $eji-line;
+$popover-box-shadow: $eji-sh-lg;
+$tooltip-bg: $eji-ink-900;
+$tooltip-border-radius: $eji-r-md;
+$tooltip-font-size: $eji-fs-xs;
+$tooltip-opacity: 1;
+
+// Breadcrumb.
+$breadcrumb-font-size: $eji-fs-sm;
+$breadcrumb-divider-color: $eji-ink-400;
+$breadcrumb-active-color: $eji-ink-800;
+$breadcrumb-padding-y: 0;
+$breadcrumb-margin-bottom: 0;
+
+// Pagination.
+$pagination-color: $eji-ink-700;
+$pagination-bg: $eji-surface;
+$pagination-border-color: $eji-line-2;
+$pagination-hover-bg: $eji-bg-alt;
+$pagination-active-bg: $eji-accent-600;
+$pagination-active-border-color: $eji-accent-600;
+$pagination-border-radius: $eji-r-md;
+
+// List groups.
+$list-group-bg: $eji-surface;
+$list-group-border-color: $eji-line;
+$list-group-border-radius: $eji-r-lg;
+$list-group-hover-bg: $eji-row-hover;
+$list-group-action-color: $eji-ink-700;
+
+// Accordions - used heavily by Moodle for course sections and admin settings.
+$accordion-bg: $eji-surface;
+$accordion-border-color: $eji-line;
+$accordion-border-radius: $eji-r-lg;
+$accordion-button-active-bg: $eji-accent-50;
+$accordion-button-active-color: $eji-accent-700;
+
+// Transitions.
+$transition-base: all $eji-transition;

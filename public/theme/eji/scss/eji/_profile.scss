@@ -1,0 +1,193 @@
+// =====================================================================
+// EJI ONE - user profile
+//
+// The profile page is built by core_user\output\myprofile\tree as a set of
+// categories and nodes. What appears is decided entirely by Moodle: the
+// user's own fields, any custom profile fields an admin has defined, and the
+// viewer's permissions.
+//
+// So the brief's "Email / Department / Position" block is not created here -
+// those rows appear only if the site actually has fields by those names. This
+// file styles whatever Moodle decides to show.
+// =====================================================================
+
+// The header card is scoped to the profile pages by body id, not to
+// `.path-user`. That class is also on /user/index.php - the course
+// participants list - where a card around the course name is simply wrong.
+#page-user-profile,
+#page-user-editadvanced,
+#page-user-edit {
+
+    // -----------------------------------------------------------------
+    // Header: avatar, name, description
+    // -----------------------------------------------------------------
+    .page-context-header {
+        display: flex;
+        align-items: center;
+        gap: var(--eji-sp-5);
+        padding: var(--eji-sp-6);
+        margin-bottom: var(--eji-sp-5);
+        background: var(--eji-surface);
+        border: 1px solid var(--eji-line);
+        border-radius: var(--eji-r-lg);
+        box-shadow: var(--eji-sh-sm);
+
+        .page-header-image .userpicture {
+            width: 84px;
+            height: 84px;
+            border-radius: var(--eji-r-full);
+            border: 3px solid var(--eji-surface);
+            box-shadow: var(--eji-sh-md);
+        }
+
+        .page-header-headings h1 {
+            margin: 0;
+            font-size: var(--eji-fs-xl);
+            font-weight: var(--eji-fw-bold);
+            color: var(--eji-ink-900);
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Category cards
+    // -----------------------------------------------------------------
+    .profile_tree {
+        column-count: 2;
+        column-gap: var(--eji-sp-5);
+
+        section.node_category {
+            display: inline-block;
+            width: 100%;
+            break-inside: avoid;
+            margin: 0 0 var(--eji-sp-5);
+            background: var(--eji-surface);
+            border: 1px solid var(--eji-line);
+            border-radius: var(--eji-r-lg);
+            box-shadow: var(--eji-sh-sm);
+            padding: var(--eji-sp-5) var(--eji-sp-6);
+
+            h3 {
+                margin: 0 0 var(--eji-sp-3);
+                padding-bottom: var(--eji-sp-3);
+                border-bottom: 1px solid var(--eji-line);
+                font-size: var(--eji-fs-md);
+                font-weight: var(--eji-fw-semibold);
+                color: var(--eji-ink-900);
+            }
+
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            li {
+                padding: var(--eji-sp-2) 0;
+                border-bottom: 1px solid var(--eji-line);
+                font-size: var(--eji-fs-base);
+                color: var(--eji-ink-700);
+
+                &:last-child {
+                    border-bottom: 0;
+                }
+
+                dl {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: var(--eji-sp-2);
+                    margin: 0;
+                }
+
+                dt {
+                    font-size: var(--eji-fs-xs);
+                    font-weight: var(--eji-fw-semibold);
+                    letter-spacing: .06em;
+                    text-transform: uppercase;
+                    color: var(--eji-ink-500);
+                    flex: 0 0 100%;
+                }
+
+                dd {
+                    margin: 0;
+                    color: var(--eji-ink-800);
+                }
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Preferences page
+    // -----------------------------------------------------------------
+    .preferences-container {
+        .col-md-6 {
+            margin-bottom: var(--eji-sp-5);
+        }
+
+        h2,
+        h3 {
+            font-size: var(--eji-fs-md);
+            font-weight: var(--eji-fw-semibold);
+            color: var(--eji-ink-900);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: var(--eji-sp-2) 0;
+            border-bottom: 1px solid var(--eji-line);
+            font-size: var(--eji-fs-base);
+        }
+    }
+}
+
+@include media-breakpoint-down(lg) {
+    // .profile_tree only exists on the profile page, so the class is enough here.
+    .path-user .profile_tree {
+        column-count: 1;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    // Scoped by body id for the same reason as the rule above: the participants
+    // list shares the .path-user class.
+    #page-user-profile,
+    #page-user-editadvanced,
+    #page-user-edit {
+        .page-context-header {
+            flex-direction: column;
+            text-align: center;
+            gap: var(--eji-sp-3);
+            padding: var(--eji-sp-5) var(--eji-sp-4);
+        }
+    }
+}
+
+// ---------------------------------------------------------------------
+// User menu in the topbar
+// ---------------------------------------------------------------------
+.usermenu {
+    .userbutton .avatars .userpicture {
+        border-radius: var(--eji-r-full);
+    }
+
+    .usertext {
+        font-size: var(--eji-fs-sm);
+        font-weight: var(--eji-fw-semibold);
+        color: var(--eji-ink-800);
+    }
+
+    .dropdown-menu {
+        min-width: 15rem;
+    }
+}
+
+// Initials avatar, used when a user has no picture.
+.userinitials {
+    border-radius: var(--eji-r-full);
+    background: var(--eji-primary-100);
+    color: var(--eji-primary-700);
+    font-weight: var(--eji-fw-bold);
+}
